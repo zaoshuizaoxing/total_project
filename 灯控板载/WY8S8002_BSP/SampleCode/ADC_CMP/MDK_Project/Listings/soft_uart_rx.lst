@@ -1,0 +1,249 @@
+C51 COMPILER V9.60.0.0   SOFT_UART_RX                                                      08/25/2026 17:28:06 PAGE 1   
+
+
+C51 COMPILER V9.60.0.0, COMPILATION OF MODULE SOFT_UART_RX
+OBJECT MODULE PLACED IN .\Objects\soft_uart_rx.obj
+COMPILER INVOKED BY: D:\Keil_5\C51\BIN\C51.EXE ..\Source_Code\soft_uart_rx.c OMF2 OPTIMIZE(8,SPEED) BROWSE INCDIR(..\..\
+                    -..\Library\inc) DEBUG PRINT(.\Listings\soft_uart_rx.lst) TABS(2) OBJECT(.\Objects\soft_uart_rx.obj)
+
+line level    source
+
+   1          #include "soft_uart_rx.h"
+   2          
+   3          #include "board_config.h"
+   4          #include "gpio.h"
+   5          #include "key_input.h"
+   6          #include "timer.h"
+   7          #include "uart.h"
+   8          
+   9          #define SOFT_UART_RX_BUF_SIZE            (64U)
+  10          #define UART0_TIMER1_RELOAD_19200        (0xE6U)
+  11          #define P06_UART_STATE_IDLE              (0U)
+  12          #define P06_UART_STATE_DATA              (1U)
+  13          #define P06_UART_STATE_STOP              (2U)
+  14          #define P06_TIMER2_FULL_RELOAD_H         (0xFCU)
+  15          #define P06_TIMER2_FULL_RELOAD_L         (0xBFU)
+  16          #define P06_TIMER2_DATA0_RELOAD_H        (0xFEU)
+  17          #define P06_TIMER2_DATA0_RELOAD_L        (0x5FU)
+  18          #define P06_GPIO_INT_MASK                (0x30U)
+  19          #define P06_GPIO_INT_FALLING             (0x20U)
+  20          
+  21          static volatile uint8_t s_rx_head[SOFT_UART_PORT_COUNT];
+  22          static volatile uint8_t s_rx_tail[SOFT_UART_PORT_COUNT];
+  23          static volatile uint8_t xdata s_rx_buf[SOFT_UART_PORT_COUNT][SOFT_UART_RX_BUF_SIZE];
+  24          static volatile uint8_t s_p06_state;
+  25          static volatile uint8_t s_p06_bit_index;
+  26          static volatile uint8_t s_p06_shift;
+  27          //软件模拟uart初始化
+  28          void SoftUartRx_Init(uint32_t baud)
+  29          {
+  30   1          uint8_t port;
+  31   1          baud = baud;
+  32   1          DISABLE_UART0_INT;
+  33   1          for(port = 0; port < SOFT_UART_PORT_COUNT; port++)
+  34   1          {
+  35   2              s_rx_head[port] = 0;
+  36   2              s_rx_tail[port] = 0;
+  37   2          }
+  38   1          s_p06_state = P06_UART_STATE_IDLE;
+  39   1          s_p06_bit_index = 0;
+  40   1          s_p06_shift = 0;
+  41   1      
+  42   1          PORT_SET_MUX(PIO06CFG, GPIO_MUX_MODE);
+  43   1          GPIO0_ConfigInput(GPIO_PIN_6, GPIO_PULLUP);
+  44   1          GPIO0_ConfigINT(GPIO_PIN_1, GPIO_INT_NONE);
+  45   1          GPIO0_ConfigINT(GPIO_PIN_6, GPIO_INT_FALLING);
+  46   1      
+  47   1          DISABLE_TIMER2;
+  48   1          DISABLE_TIME2_INT;
+  49   1          TIMER2_T2MOD_T2DIV_SET(TIMER2_T2DIV_1DIV);
+  50   1          TIMER2_SET_RELOAD_MODE;
+  51   1          TIMER2_T2MOD_LDTS_SET(TIMER2_LDTS_OVER);
+  52   1          DISABLE_TIMER2_CMPCR;
+  53   1          TIMER2_RCMP_DATA_REG(P06_TIMER2_FULL_RELOAD_H, P06_TIMER2_FULL_RELOAD_L);
+  54   1          TIMER2_DATA_REG(P06_TIMER2_DATA0_RELOAD_H, P06_TIMER2_DATA0_RELOAD_L);
+C51 COMPILER V9.60.0.0   SOFT_UART_RX                                                      08/25/2026 17:28:06 PAGE 2   
+
+  55   1          ENABLE_TIMER2_RELOAD;
+  56   1          CLR_TIME2_TF2_FLAG;
+  57   1          CLR_TIME2_TC2_FLAG;
+  58   1          TIMER2_PRIORITY_H;
+  59   1          ENABLE_TIME2_INT;
+  60   1      
+  61   1          GPIO0_ConfigInput(GPIO_PIN_1, GPIO_PULLUP);
+  62   1          PORT_SET_MUX(PIO01CFG, UART0_RXD_MUX_MODE);
+  63   1          DISABLE_TIMER1;
+  64   1          CLR_TIME1_OVER_FLAG;
+  65   1          DISABLE_TIME1_INT;
+  66   1          TIMER1_TMOD_GATE1_SET(CLR_BIT);
+  67   1          TIMER1_TMOD_CNT1_SET(CLR_BIT);
+  68   1          TIMER1_TMOD_MODE_SET(TIMER01_MODE2);
+  69   1          TH1 = UART0_TIMER1_RELOAD_19200;
+  70   1          TL1 = UART0_TIMER1_RELOAD_19200;
+  71   1      
+  72   1          UART0_SCON_MODE_SET(UART_8BIT_ASY_MODE);
+  73   1          DISABLE_UART0_SM2;
+  74   1          ENABLE_UART0_REN;
+  75   1          UART0_SCKS_SET(UART_TIMER1);
+  76   1          ENABLE_UART0_SMOD;
+  77   1          CLR_UART0_RI_FLAG;
+  78   1          CLR_UART0_TI_FLAG;
+  79   1          UART0_PRIORITY_H;
+  80   1      
+  81   1          CLR_GPIO0_FLAG(GPIO_PIN_1);
+  82   1          CLR_GPIO0_FLAG(GPIO_PIN_6);
+  83   1          ENABLE_TIMER1;
+  84   1          ENABLE_UART0_INT;
+  85   1          ENABLE_GPIO_INT;
+  86   1          ENABLE_ALL_INT;
+  87   1      }
+  88          uint8_t SoftUartRx_Available(uint8_t port)
+  89          {
+  90   1          if(port >= SOFT_UART_PORT_COUNT)
+  91   1          {
+  92   2              return 0;
+  93   2          }
+  94   1          return (s_rx_head[port] != s_rx_tail[port]) ? 1 : 0;
+  95   1      }
+  96          //软件模拟接收数据
+  97          uint8_t SoftUartRx_ReadByte(uint8_t port)
+  98          {
+  99   1          uint8_t data_value;
+ 100   1      
+ 101   1          if((port >= SOFT_UART_PORT_COUNT) || (s_rx_head[port] == s_rx_tail[port]))
+ 102   1          {
+ 103   2              return 0;
+ 104   2          }
+ 105   1      
+ 106   1          data_value = s_rx_buf[port][s_rx_tail[port]];
+ 107   1          s_rx_tail[port]++;
+ 108   1          if(s_rx_tail[port] >= SOFT_UART_RX_BUF_SIZE)
+ 109   1          {
+ 110   2              s_rx_tail[port] = 0;
+ 111   2          }
+ 112   1          return data_value;
+ 113   1      }
+ 114          //使能gpio中断，用来处理软件模拟uart的接收数据
+ 115          static void _GPIO_IRQHandler(void) interrupt GPIO_VECTOR using 2
+ 116          {
+C51 COMPILER V9.60.0.0   SOFT_UART_RX                                                      08/25/2026 17:28:06 PAGE 3   
+
+ 117   1          if(IS_GPIO0_FLAG(GPIO_PIN_6))
+ 118   1          {
+ 119   2              CLR_GPIO0_FLAG(GPIO_PIN_6);
+ 120   2              if(s_p06_state == P06_UART_STATE_IDLE)
+ 121   2              {
+ 122   3                  DISABLE_TIMER2;
+ 123   3                  TIMER2_DATA_REG(P06_TIMER2_DATA0_RELOAD_H, P06_TIMER2_DATA0_RELOAD_L);
+ 124   3                  CLR_TIME2_TF2_FLAG;
+ 125   3                  CLR_TIME2_TC2_FLAG;
+ 126   3                  s_p06_state = P06_UART_STATE_DATA;
+ 127   3                  ENABLE_TIMER2;
+ 128   3                  PIO0EICFGH &= (uint8_t)(~P06_GPIO_INT_MASK);
+ 129   3                  s_p06_bit_index = 0;
+ 130   3                  s_p06_shift = 0;
+ 131   3              }
+ 132   2          }
+ 133   1          if(IS_GPIO1_FLAG(GPIO_PIN_7))
+ 134   1          {
+ 135   2              CLR_GPIO1_FLAG(GPIO_PIN_7);
+ 136   2              KeyInput_OnFallingEdge();
+ 137   2          }
+ 138   1      }
+ 139          //使能硬件uart0中断，并在中断中处理接收数据
+ 140          static void _UART0_IRQHandler(void) interrupt UART0_VECTOR using 1
+ 141          {
+ 142   1          uint8_t data_value;
+ 143   1          uint8_t next_head;
+ 144   1      
+ 145   1          if(IS_UART0_RI_FLAG)
+ 146   1          {
+ 147   2              data_value = UART0_READ_SBUF;
+ 148   2              CLR_UART0_RI_FLAG;
+ 149   2      
+ 150   2              next_head = s_rx_head[SOFT_UART_PORT_C12] + 1;
+ 151   2              if(next_head >= SOFT_UART_RX_BUF_SIZE)
+ 152   2              {
+ 153   3                  next_head = 0;
+ 154   3              }
+ 155   2      
+ 156   2              if(next_head != s_rx_tail[SOFT_UART_PORT_C12])
+ 157   2              {
+ 158   3                  s_rx_buf[SOFT_UART_PORT_C12][s_rx_head[SOFT_UART_PORT_C12]] = data_value;
+ 159   3                  s_rx_head[SOFT_UART_PORT_C12] = next_head;
+ 160   3              }
+ 161   2          }
+ 162   1          
+ 163   1          if(IS_UART0_TI_FLAG)
+ 164   1          {
+ 165   2              CLR_UART0_TI_FLAG;
+ 166   2          }
+ 167   1      }
+ 168          //使能定时器2中断，处理软件模拟uart数据
+ 169          static void _TIMER2_IRQHandler(void) interrupt TIMER2_VECTOR using 3
+ 170          {
+ 171   1          uint8_t next_head;
+ 172   1      
+ 173   1          if(IS_TIME2_TF2_FLAG)
+ 174   1          {
+ 175   2              CLR_TIME2_TF2_FLAG;
+ 176   2      
+ 177   2              if(s_p06_state == P06_UART_STATE_DATA)
+ 178   2              {
+C51 COMPILER V9.60.0.0   SOFT_UART_RX                                                      08/25/2026 17:28:06 PAGE 4   
+
+ 179   3                  s_p06_shift >>= 1;
+ 180   3                  if(P06 != 0)
+ 181   3                  {
+ 182   4                      s_p06_shift |= 0x80U;
+ 183   4                  }
+ 184   3                  s_p06_bit_index++;
+ 185   3                  if(s_p06_bit_index >= 8U)
+ 186   3                  {
+ 187   4                      s_p06_state = P06_UART_STATE_STOP;
+ 188   4                  }
+ 189   3              }
+ 190   2              else if(s_p06_state == P06_UART_STATE_STOP)
+ 191   2              {
+ 192   3                  DISABLE_TIMER2;
+ 193   3                  s_p06_state = P06_UART_STATE_IDLE;
+ 194   3                  CLR_GPIO0_FLAG(GPIO_PIN_6);
+ 195   3                  PIO0EICFGH = (PIO0EICFGH & (uint8_t)(~P06_GPIO_INT_MASK))
+ 196   3                             | P06_GPIO_INT_FALLING;
+ 197   3      
+ 198   3                  if(P06 != 0)
+ 199   3                  {
+ 200   4                      next_head = s_rx_head[SOFT_UART_PORT_C34] + 1;
+ 201   4                      if(next_head >= SOFT_UART_RX_BUF_SIZE)
+ 202   4                      {
+ 203   5                          next_head = 0;
+ 204   5                      }
+ 205   4      
+ 206   4                      if(next_head != s_rx_tail[SOFT_UART_PORT_C34])
+ 207   4                      {
+ 208   5                          s_rx_buf[SOFT_UART_PORT_C34][s_rx_head[SOFT_UART_PORT_C34]]
+ 209   5                              = s_p06_shift;
+ 210   5                          s_rx_head[SOFT_UART_PORT_C34] = next_head;
+ 211   5                      }
+ 212   4                  }
+ 213   3              }
+ 214   2          }
+ 215   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    653    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =    128    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      7    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+   EDATA SIZE       =   ----    ----
+   HDATA SIZE       =   ----    ----
+   XDATA CONST SIZE =   ----    ----
+   FAR CONST SIZE   =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

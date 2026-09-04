@@ -1,0 +1,152 @@
+C51 COMPILER V9.60.0.0   TIMER                                                             09/04/2026 10:15:44 PAGE 1   
+
+
+C51 COMPILER V9.60.0.0, COMPILATION OF MODULE TIMER
+OBJECT MODULE PLACED IN .\Objects\timer.obj
+COMPILER INVOKED BY: D:\Keil_5\C51\BIN\C51.EXE ..\..\..\Library\src\timer.c OMF2 OPTIMIZE(8,SPEED) BROWSE INCDIR(..\..\.
+                    -.\Library\inc) DEBUG PRINT(.\Listings\timer.lst) TABS(2) OBJECT(.\Objects\timer.obj)
+
+line level    source
+
+   1          /**
+   2           * @file      timer.c
+   3           * @brief     TIMER Module Driver
+   4           * @author    Software Team
+   5           * @date      2023-07
+   6           * @version   V1.0.0
+   7           * @copyright WAYON
+   8           */
+   9          
+  10          #include "timer.h"
+  11          
+  12          /**
+  13           * Configures TIMER0 mode
+  14           * @param[in] u8mode  Mode selection
+  15           * -# TIMER01_MODE0  Mode 0, 13-bit Timer/Counter
+  16           * -# TIMER01_MODE1  Mode 1, 16-bit Timer/Counter
+  17           * -# TIMER01_MODE2  Mode 2, 8-bit Timer/Counter, reloads value from TH on TL overflow
+  18           * -# TIMER01_MODE3  Mode 3, TL0 as 8-bit Timer/Counter (controlled by TIMER0), TH0 as 8-bit Timer/Counter
+             - (controlled
+  19           * by TIMER1)
+  20           * @param[in] u8gate Gate control
+  21           * -# TIMER01_TR_GATE:    Starts counting when TCON.TR0 is set to 1
+  22           * -# TIMER01_INT_TR_GATE:Starts counting when both INT0 and TR0 are set to 1
+  23           * @param[in] u8cnt Clock source selection
+  24           * -# TIMER01_ICLK: As Timer0, the driving clock is from the internal clock input
+  25           * -# TIMER01_TCLK: As Counter0, the driving clock is from the T0 pin input
+  26           */
+  27          void TIMER0_ConfigMode(uint8_t u8mode, uint8_t u8gate, uint8_t u8cnt)
+  28          {
+  29   1          TIMER0_TMOD_MODE_SET(u8mode);  /* Mode selection */
+  30   1          TIMER0_TMOD_GATE0_SET(u8gate); /* Gate control */
+  31   1          TIMER0_TMOD_CNT0_SET(u8cnt);   /* Clock source selection */
+  32   1      }
+  33          
+  34          /**
+  35           * Configures TIMER1 mode
+  36           * @param[in] u8mode  Mode selection
+  37           * -# TIMER01_MODE0  Mode 0, 13-bit Timer/Counter
+  38           * -# TIMER01_MODE1  Mode 1, 16-bit Timer/Counter
+  39           * -# TIMER01_MODE2  Mode 2, 8-bit Timer/Counter, reloads value from TH on TL overflow
+  40           * -# TIMER01_MODE3  Mode 3, TL0 as 8-bit Timer/Counter (controlled by TIMER0), TH0 as 8-bit Timer/Counter
+             - (controlled
+  41           * by TIMER1)
+  42           * @param[in] u8gate Gate control
+  43           * -# TIMER01_TR_GATE:    Starts counting when TCON.TR1 is set to 1
+  44           * -# TIMER01_INT_TR_GATE:Starts counting when both INT1 and TR1 are set to 1
+  45           * @param[in] u8cnt Clock source selection
+  46           * -# TIMER01_ICLK: As Timer1, the driving clock is from the internal clock input
+  47           * -# TIMER01_TCLK: As Counter1, the driving clock is from the T1 pin input
+  48           */
+  49          void TIMER1_ConfigMode(uint8_t u8mode, uint8_t u8gate, uint8_t u8cnt)
+  50          {
+  51   1          TIMER1_TMOD_MODE_SET(u8mode);  /* Mode selection */
+  52   1          TIMER1_TMOD_GATE1_SET(u8gate); /* Gate control */
+C51 COMPILER V9.60.0.0   TIMER                                                             09/04/2026 10:15:44 PAGE 2   
+
+  53   1          TIMER1_TMOD_CNT1_SET(u8cnt);   /* Clock source selection */
+  54   1      }
+  55          
+  56          /**
+  57           * Configures TIMER2 capture channel 0
+  58           * @param[in] u8trigger Capture trigger mode
+  59           * -# TIMER2_CAPLS_FALLING: Falling edge
+  60           * -# TIMER2_CAPLS_RISING: Rising edge
+  61           * -# TIMER2_CAPLS_RISING_FALLING: Both rising and falling edges
+  62           * @param[in] u8filter Enable/disable noise filter
+  63           * -# DISABLE_CAP_FILTER: Disable noise filter on the capture channel
+  64           * -# ENABLE_CAP_FILTER: Enable noise filter on the capture channel
+  65           */
+  66          void TIMER2_ConfigCap0Mode(uint8_t u8trigger, uint8_t u8filter)
+  67          {
+  68   1          TIMER2_CAPCON1_CAP0LS_SET(u8trigger);
+  69   1          TIMER2_CAPCON0_CAPFEN0_SET(u8filter);
+  70   1      }
+  71          
+  72          /**
+  73           * Configures TIMER2 capture channel 1
+  74           * @param[in] u8trigger Capture trigger mode
+  75           * -# TIMER2_CAPLS_FALLING: Falling edge
+  76           * -# TIMER2_CAPLS_RISING: Rising edge
+  77           * -# TIMER2_CAPLS_RISING_FALLING: Both rising and falling edges
+  78           * @param[in] u8filter Enable/disable noise filter
+  79           * -# DISABLE_CAP_FILTER: Disable noise filter on the capture channel
+  80           * -# ENABLE_CAP_FILTER: Enable noise filter on the capture channel
+  81           */
+  82          void TIMER2_ConfigCap1Mode(uint8_t u8trigger, uint8_t u8filter)
+  83          {
+  84   1          TIMER2_CAPCON1_CAP1LS_SET(u8trigger);
+  85   1          TIMER2_CAPCON0_CAPFEN1_SET(u8filter);
+  86   1      }
+  87          
+  88          /**
+  89           * Configures TIMER2 capture channel 2
+  90           * @param[in] u8trigger Capture trigger mode
+  91           * -# TIMER2_CAPLS_FALLING: Falling edge
+  92           * -# TIMER2_CAPLS_RISING: Rising edge
+  93           * -# TIMER2_CAPLS_RISING_FALLING: Both rising and falling edges
+  94           * @param[in] u8filter Enable/disable noise filter
+  95           * -# DISABLE_CAP_FILTER: Disable noise filter on the capture channel
+  96           * -# ENABLE_CAP_FILTER: Enable noise filter on the capture channel
+  97           */
+  98          void TIMER2_ConfigCap2Mode(uint8_t u8trigger, uint8_t u8filter)
+  99          {
+ 100   1          TIMER2_CAPCON1_CAP2LS_SET(u8trigger);
+ 101   1          TIMER2_CAPCON0_CAPFEN2_SET(u8filter);
+ 102   1      }
+ 103          
+ 104          /**
+ 105           * Configures TIMER2 capture channel 3
+ 106           * @param[in] u8trigger Capture trigger mode
+ 107           * -# TIMER2_CAPLS_FALLING: Falling edge
+ 108           * -# TIMER2_CAPLS_RISING: Rising edge
+ 109           * -# TIMER2_CAPLS_RISING_FALLING: Both rising and falling edges
+ 110           * @param[in] u8filter Enable/disable noise filter
+ 111           * -# DISABLE_CAP_FILTER: Disable noise filter on the capture channel
+ 112           * -# ENABLE_CAP_FILTER: Enable noise filter on the capture channel
+ 113           */
+ 114          void TIMER2_ConfigCap3Mode(uint8_t u8trigger, uint8_t u8filter)
+C51 COMPILER V9.60.0.0   TIMER                                                             09/04/2026 10:15:44 PAGE 3   
+
+ 115          {
+ 116   1          TIMER2_CAPCON1_CAP3LS_SET(u8trigger);
+ 117   1          TIMER2_CAPCON0_CAPFEN3_SET(u8filter);
+ 118   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    180    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+   EDATA SIZE       =   ----    ----
+   HDATA SIZE       =   ----    ----
+   XDATA CONST SIZE =   ----    ----
+   FAR CONST SIZE   =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

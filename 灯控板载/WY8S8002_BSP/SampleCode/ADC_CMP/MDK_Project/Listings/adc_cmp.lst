@@ -1,0 +1,137 @@
+C51 COMPILER V9.60.0.0   ADC_CMP                                                           07/03/2026 15:32:29 PAGE 1   
+
+
+C51 COMPILER V9.60.0.0, COMPILATION OF MODULE ADC_CMP
+OBJECT MODULE PLACED IN .\Objects\adc_cmp.obj
+COMPILER INVOKED BY: D:\Keil_5\C51\BIN\C51.EXE ..\Source_Code\adc_cmp.c OMF2 OPTIMIZE(8,SPEED) BROWSE INCDIR(..\..\..\Li
+                    -brary\inc) DEBUG PRINT(.\Listings\adc_cmp.lst) TABS(2) OBJECT(.\Objects\adc_cmp.obj)
+
+line level    source
+
+   1          /**
+   2           * @file      adc_cmp.c
+   3           * @brief     ADC comparison mode
+   4           * @author    Software Team
+   5           * @date      2023-07
+   6           * @version   V1.0.0
+   7           * @copyright WAYON
+   8           */
+   9          
+  10          #include "common.h"
+  11          
+  12          #include "adc.h"
+  13          #include "adc_cmp.h"
+  14          #include "gpio.h"
+  15          #include "pwm.h"
+  16          
+  17          #define ADCMP_DATA      (0x9B2) /* Comparison voltage of 2V under 3.3V supply, computed as 2000 * 4096 / 3
+             -300 */
+  18          #define PWM_DIV_DATA    (3)
+  19          #define PWM_PERIOD_1MS  (1000)
+  20          #define PWM_PERIOD_TIME (PWM_PERIOD_1MS)
+  21          
+  22          static void _GPIO_Test(void);
+  23          static void _ADC_ConfigPWM(void);
+  24          
+  25          /**
+  26           * ADC comparison mode setup configuration
+  27           */
+  28          void ADC_ConfigCMPInit(void)
+  29          {
+  30   1          _GPIO_Test();
+  31   1          ADC_ConfigChannel(ADC_AIN0, ADC_DIV_4);
+  32   1          ADC_ConfigSWCVT();
+  33   1          ADC_ConfigCMP(ADC_DISABLE_PWMFB, ADC_CR_LESS_CMP_1);
+  34   1          ADC_CMP_12BIT_SET(ADCMP_DATA);
+  35   1      
+  36   1          ENABLE_ADC;
+  37   1          ENABLE_ADC_INT;
+  38   1          ENABLE_ALL_INT;
+  39   1      }
+  40          
+  41          /**
+  42           * ADC comparison mode control PWM brake configuration
+  43           */
+  44          void ADC_ConfigCMPFBInit(void)
+  45          {
+  46   1          _GPIO_Test();
+  47   1          _ADC_ConfigPWM();
+  48   1          ADC_ConfigChannel(ADC_AIN0, ADC_DIV_4);
+  49   1          ADC_ConfigSWCVT();
+  50   1          ADC_ConfigCMP(ADC_ENABLE_PWMFB, ADC_CR_LESS_CMP_1);
+  51   1          ADC_CMP_12BIT_SET(ADCMP_DATA);
+  52   1      
+  53   1          ENABLE_ADC;
+C51 COMPILER V9.60.0.0   ADC_CMP                                                           07/03/2026 15:32:29 PAGE 2   
+
+  54   1          ENABLE_ADC_INT;
+  55   1          ENABLE_ALL_INT;
+  56   1      }
+  57          
+  58          /**
+  59           * Comparator output test pin configuration: Use P11 to indicate comparator output results.
+  60           */
+  61          static void _GPIO_Test(void)
+  62          {
+  63   1          PORT_SET_MUX(PIO11CFG, GPIO_MUX_MODE);
+  64   1          GPIO1_ConfigOutput(GPIO_PIN_1, GPIO_PP, GPIO_PULLUP, CURRENT_00);
+  65   1          P11 = 1;
+  66   1      }
+  67          
+  68          /**
+  69           * PWM output configuration, used for testing ADC controlled PWM brake
+  70           */
+  71          static void _ADC_ConfigPWM(void)
+  72          {
+  73   1          uint16_t u16Period;
+  74   1          uint16_t u16Cmp;
+  75   1      
+  76   1          PORT_SET_MUX(PIO15CFG, PWM0_MUX_MODE);
+  77   1      
+  78   1          ENABLE_PWM;
+  79   1          PWM_PWMCON_PWMMODE_SET(PWM_INDEPENDENT_MODE);
+  80   1          PWM_PWMPSC01_DATA(PWM_DIV_DATA);
+  81   1          PWM_CNTTYPE_SET(PWM_Mid_ALIGN_MODE);
+  82   1      
+  83   1          u16Period = (g_u32SystemClock / (PWM_DIV_DATA + 1)) * PWM_PERIOD_TIME / 1000000 - 1;
+  84   1          u16Period = u16Period / 2;
+  85   1          PWM_PWMP0HL_DATA((u16Period >> 8) & 0xFF, u16Period & 0xFF);
+  86   1          u16Cmp = u16Period * 5 / 10;
+  87   1          PWM_PWMD0HL_DATA((u16Cmp >> 8) & 0xFF, u16Cmp & 0xFF);
+  88   1      
+  89   1          PWM0_CNT_MODE_SET(AUTOLOAD_MODE);
+  90   1          ENABLE_PWM0_CNT;
+  91   1          PWM_StartLoad(PWM_0);
+  92   1      }
+  93          
+  94          /**
+  95           * ADC interrupt service function
+  96           */
+  97          static void _ADC_IRQHandler(void) interrupt ADC_VECTOR
+  98          {
+  99   1          if(IS_ADC_IF_FLAG)
+ 100   1          {
+ 101   2              P11 = GET_ADC_ADCMPO; /* Get comparator result, output using P11 */
+ 102   2              CLR_ADC_IF_FLAG;
+ 103   2          }
+ 104   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    259    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+   EDATA SIZE       =   ----    ----
+C51 COMPILER V9.60.0.0   ADC_CMP                                                           07/03/2026 15:32:29 PAGE 3   
+
+   HDATA SIZE       =   ----    ----
+   XDATA CONST SIZE =   ----    ----
+   FAR CONST SIZE   =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

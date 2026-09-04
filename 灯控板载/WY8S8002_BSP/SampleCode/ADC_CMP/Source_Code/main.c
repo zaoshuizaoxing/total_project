@@ -5,7 +5,7 @@
 //采样次数
 #define ADC_SAMPLE_COUNT              (10U)
 //电压量程
-#define ADC_REFERENCE_MV              (5000UL)
+#define ADC_REFERENCE_MV              (3300UL)
 //12位ADC满量程
 #define ADC_FULL_SCALE                (4095UL)
 //电阻阻值
@@ -89,7 +89,7 @@ int main(void)
     uint8_t sign0=0;
     uint8_t sign1=0;
     uint8_t sign2=0;
-    System_ConfigCLK(SYSCLK_HRC, CLK_DIV_2, WAITS_INST_VDD_GE3600MV_CLK_GE10_LT20M);
+    System_ConfigCLK(SYSCLK_HRC, CLK_DIV_2,WAITS_INST_VDD_LT3600MV_CLK_GE15_LT20M);
     GPIO_InitLedOutputs();
     ADC_InitCurrentInputs();
     while(1)

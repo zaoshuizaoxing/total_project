@@ -1,4 +1,4 @@
-C51 COMPILER V9.60.0.0   MAIN                                                              09/04/2026 10:15:44 PAGE 1   
+C51 COMPILER V9.60.0.0   MAIN                                                              09/04/2026 17:17:25 PAGE 1   
 
 
 C51 COMPILER V9.60.0.0, COMPILATION OF MODULE MAIN
@@ -15,7 +15,7 @@ line level    source
    5          //采样次数
    6          #define ADC_SAMPLE_COUNT              (10U)
    7          //电压量程
-   8          #define ADC_REFERENCE_MV              (5000UL)
+   8          #define ADC_REFERENCE_MV              (3300UL)
    9          //12位ADC满量程
   10          #define ADC_FULL_SCALE                (4095UL)
   11          //电阻阻值
@@ -62,7 +62,7 @@ line level    source
   52   1          ADC_SMP_SEL(ADC_CLKP_8);
   53   1          ADC_ConfigSWCVT();
   54   1          ENABLE_ADC;
-C51 COMPILER V9.60.0.0   MAIN                                                              09/04/2026 10:15:44 PAGE 2   
+C51 COMPILER V9.60.0.0   MAIN                                                              09/04/2026 17:17:25 PAGE 2   
 
   55   1          Timer0_Delay_ms(1U);
   56   1      }
@@ -101,7 +101,7 @@ line level    source
   89   1          uint8_t sign0=0;
   90   1          uint8_t sign1=0;
   91   1          uint8_t sign2=0;
-  92   1          System_ConfigCLK(SYSCLK_HRC, CLK_DIV_2, WAITS_INST_VDD_GE3600MV_CLK_GE10_LT20M);
+  92   1          System_ConfigCLK(SYSCLK_HRC, CLK_DIV_2,WAITS_INST_VDD_LT3600MV_CLK_GE15_LT20M);
   93   1          GPIO_InitLedOutputs();
   94   1          ADC_InitCurrentInputs();
   95   1          while(1)
@@ -126,7 +126,7 @@ line level    source
  114   2              if(sign1==1&&current_x10_ma1<1000U)
  115   2              {
  116   3                  current_threshold_x10_ma1=1500U;
-C51 COMPILER V9.60.0.0   MAIN                                                              09/04/2026 10:15:44 PAGE 3   
+C51 COMPILER V9.60.0.0   MAIN                                                              09/04/2026 17:17:25 PAGE 3   
 
  117   3              }
  118   2              //退出特殊处理环节

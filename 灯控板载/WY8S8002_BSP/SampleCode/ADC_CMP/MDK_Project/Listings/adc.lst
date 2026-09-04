@@ -1,4 +1,4 @@
-C51 COMPILER V9.60.0.0   ADC                                                               09/04/2026 10:15:44 PAGE 1   
+C51 COMPILER V9.60.0.0   ADC                                                               09/04/2026 17:17:24 PAGE 1   
 
 
 C51 COMPILER V9.60.0.0, COMPILATION OF MODULE ADC
@@ -62,7 +62,7 @@ line level    source
   52   2                  break;
   53   2              case ADC_AIN5:
   54   2                  PORT_SET_MUX(ADC_AIN5_PORT, ANALOG_MUX_MODE);
-C51 COMPILER V9.60.0.0   ADC                                                               09/04/2026 10:15:44 PAGE 2   
+C51 COMPILER V9.60.0.0   ADC                                                               09/04/2026 17:17:24 PAGE 2   
 
   55   2                  ADC_ADCCON2_CHS_SEL(ADC_AIN5);
   56   2                  break;
@@ -126,7 +126,7 @@ line level    source
  113   1          ADC_ADCCON0_SC_SET(ADC_SW_CVT_MODE);
  114   1      }
  115          /**
-C51 COMPILER V9.60.0.0   ADC                                                               09/04/2026 10:15:44 PAGE 3   
+C51 COMPILER V9.60.0.0   ADC                                                               09/04/2026 17:17:24 PAGE 3   
 
  116           * Start Software Conversion
  117           * @note Wait for ADC module to be idle before starting conversion

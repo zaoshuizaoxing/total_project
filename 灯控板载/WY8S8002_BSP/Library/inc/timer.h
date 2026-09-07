@@ -109,6 +109,7 @@
  * @return 0: TIMER0 not overflowed\n
  *         1: TIMER0 overflowed, set by hardware on overflow, cleared by hardware
  */
+//中断触发标志
 #define IS_TIME0_OVER_FLAG  (TF0)
 #define CLR_TIME0_OVER_FLAG (TF0 = 0) /*!< Clear the flag */
 

@@ -133,12 +133,12 @@
         <Ww>
           <count>0</count>
           <WinNumber>1</WinNumber>
-          <ItemText>g_app.measurement[2]</ItemText>
+          <ItemText>current_x10_ma0</ItemText>
         </Ww>
         <Ww>
           <count>1</count>
           <WinNumber>1</WinNumber>
-          <ItemText>g_app.measurement[4]</ItemText>
+          <ItemText>current_x10_ma1</ItemText>
         </Ww>
       </WatchWindow1>
       <Tracepoint>

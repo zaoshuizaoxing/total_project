@@ -2,6 +2,7 @@
 #include "adc.h"
 #include "delay.h"
 #include "gpio.h"
+#include "wdt.h"
 //采样次数
 #define ADC_SAMPLE_COUNT              (10U)
 //电压量程
@@ -9,19 +10,23 @@
 //12位ADC满量程
 #define ADC_FULL_SCALE                (4095UL)
 //电阻阻值
-#define CURRENT_SENSE_RESISTOR_MOHM   (200UL)
+#define CURRENT_SENSE_RESISTOR_MOHM   (80UL)
 //电流固定点缩放因子
 #define CURRENT_FIXED_POINT_SCALE     (10UL)
 //三个端口的电流阈值
-uint16_t current_threshold_x10_ma0=1000U;
-uint16_t current_threshold_x10_ma1=1000U;
-uint16_t current_threshold_x10_ma2=1000U;
+uint16_t current_threshold_x10_ma0=3000U;
+uint16_t current_threshold_x10_ma1=3000U;
+uint16_t current_threshold_x10_ma2=3000U;
 //采样间隔
 #define SAMPLE_INTERVAL_PART_MS       (100U)
 //采样100ms间隔次数
-#define SAMPLE_INTERVAL_PART_COUNT    (2U)
+#define SAMPLE_INTERVAL_PART_COUNT    (3U)
 #define CURRENT_CONVERSION_DIVISOR \
     ((ADC_FULL_SCALE * ADC_SAMPLE_COUNT * CURRENT_SENSE_RESISTOR_MOHM) / 1000UL)
+
+//采样充满及其限制
+#define full 3000U
+#define limix 5000U
 
 static void GPIO_InitLedOutputs(void);
 static void ADC_InitCurrentInputs(void);
@@ -32,22 +37,22 @@ static void GPIO_InitLedOutputs(void)
 {
     PORT_SET_MUX(PIO00CFG, GPIO_MUX_MODE);
     PORT_SET_MUX(PIO01CFG, GPIO_MUX_MODE);
-    PORT_SET_MUX(PIO02CFG, GPIO_MUX_MODE);
+    // PORT_SET_MUX(PIO02CFG, GPIO_MUX_MODE);
 
     GPIO0_ConfigOutput(GPIO_PIN_0, GPIO_PP, GPIO_NOPULL, CURRENT_00);
     GPIO0_ConfigOutput(GPIO_PIN_1, GPIO_PP, GPIO_NOPULL, CURRENT_00);
-    GPIO0_ConfigOutput(GPIO_PIN_2, GPIO_PP, GPIO_NOPULL, CURRENT_00);
+    // GPIO0_ConfigOutput(GPIO_PIN_2, GPIO_PP, GPIO_NOPULL, CURRENT_00);
 
     P00 = OUTPUT_LOW;
     P01 = OUTPUT_LOW;
-    P02 = OUTPUT_LOW;
+    // P02 = OUTPUT_LOW;
 }
 
 static void ADC_InitCurrentInputs(void)
 {
     ADC_ConfigChannel(ADC_AIN6, ADC_DIV_4); /* P03 */
     ADC_ConfigChannel(ADC_AIN5, ADC_DIV_4); /* P04 */
-    ADC_ConfigChannel(ADC_AIN4, ADC_DIV_4); /* P05 */
+    // ADC_ConfigChannel(ADC_AIN4, ADC_DIV_4); /* P05 */
     ADC_ADCCON1_VREF_SEL(ADC_INPUT_VREF_AVDD);
     ADC_SMP_SEL(ADC_CLKP_8);
     ADC_ConfigSWCVT();
@@ -85,59 +90,66 @@ int main(void)
 {
     uint32_t current_x10_ma0=0U;
     uint32_t current_x10_ma1=0U;
-    uint32_t current_x10_ma2=0U;
+    // uint32_t current_x10_ma2=0U;
     uint8_t sign0=0;
     uint8_t sign1=0;
-    uint8_t sign2=0;
+    // uint8_t sign2=0;
     System_ConfigCLK(SYSCLK_HRC, CLK_DIV_2,WAITS_INST_VDD_LT3600MV_CLK_GE15_LT20M);
     GPIO_InitLedOutputs();
     ADC_InitCurrentInputs();
+    WDT_ConfigMode(WDT_DIV_1024, ENABLE_OVER_RST, WDT_IDLE_SLEEP_MODE);
+    WDT_Run(ENABLE_WDT);
+    //延迟等待硬件稳定
+    Timer0_Delay_ms(5);
     while(1)
     {
-        //端口一
+        //端口一模拟输入
         current_x10_ma0 = ADC_ReadFilteredCurrentX10Ma(ADC_AIN6);
-        //进入特殊处理环节
-        if(sign0==1&&current_x10_ma0<1000U)
-        {
-            current_threshold_x10_ma0=1500U;
-        }
-        //退出特殊处理环节
-        else if(sign0==1&&current_x10_ma0>1500U)
-        {
-            current_threshold_x10_ma0=1000U;
-        }
         P00 = (current_x10_ma0 > current_threshold_x10_ma0) ? OUTPUT_HIGH : OUTPUT_LOW;
-        sign0 = (current_x10_ma0 > current_threshold_x10_ma0) ? 1 : 0;
+        sign0 = P00;
+        //进入特殊处理环节
+        if(sign0==0&&current_x10_ma0<full)
+        {
+            current_threshold_x10_ma0=limix;
+        }
+        //退出特殊处理环节
+        else if(sign0==1&&current_x10_ma0>limix)
+        {
+            current_threshold_x10_ma0=full;
+        }
 
-         //端口二
+
+        //端口二模拟输入
         current_x10_ma1 = ADC_ReadFilteredCurrentX10Ma(ADC_AIN5);
-        if(sign1==1&&current_x10_ma1<1000U)
-        {
-            current_threshold_x10_ma1=1500U;
-        }
-        //退出特殊处理环节
-        else if(sign1==1&&current_x10_ma1>1500U)
-        {
-            current_threshold_x10_ma1=1000U;
-        }
         P01 = (current_x10_ma1 > current_threshold_x10_ma1) ? OUTPUT_HIGH : OUTPUT_LOW;
-        sign1 = (current_x10_ma1 > current_threshold_x10_ma1) ? 1 : 0;
-
-
-         //端口三
-        current_x10_ma2 = ADC_ReadFilteredCurrentX10Ma(ADC_AIN4);
-        if(sign2==1&&current_x10_ma2<1000U)
+        sign1 = P01;
+        if(sign1==0&&current_x10_ma1<full)
         {
-            current_threshold_x10_ma2=1500U;
+            current_threshold_x10_ma1=limix;
         }
         //退出特殊处理环节
-        else if(sign2==1&&current_x10_ma2>1500U)
+        else if(sign1==1&&current_x10_ma1>limix)
         {
-            current_threshold_x10_ma2=1000U;
+            current_threshold_x10_ma1=full;
+        }
+
+
+         //端口三模拟输入
+        /*current_x10_ma2 = ADC_ReadFilteredCurrentX10Ma(ADC_AIN4);
+        if(sign2==1&&current_x10_ma2<full)
+        {
+            current_threshold_x10_ma2=limix;
+        }
+        //退出特殊处理环节
+        else if(sign2==1&&current_x10_ma2>limix)
+        {
+            current_threshold_x10_ma2=full;
         }
         P02 = (current_x10_ma2 > current_threshold_x10_ma2) ? OUTPUT_HIGH : OUTPUT_LOW;
-        sign2 = (current_x10_ma2 > current_threshold_x10_ma2) ? 1 : 0;
+        sign2 = (current_x10_ma2 > current_threshold_x10_ma2) ? 1 : 0;*/
 
         DelaySampleInterval();
+        //看门狗复位
+        WDT_ClearWDT(); 
     }
 }

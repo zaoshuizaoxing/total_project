@@ -55,7 +55,7 @@ void WDT_Run(uint8_t u8WDTFlag)
  * @note After clearing the watchdog counter, you need to wait for the watchdog timer to reset
  */
 void WDT_ClearWDT(void)
-{
+{   
 	if(GET_WDT_WDTCLR_STATUS() == WDT_WDTCLRED)
 	{
 		WDTCON &= ~WDT_WDTCON_WDTCLR;

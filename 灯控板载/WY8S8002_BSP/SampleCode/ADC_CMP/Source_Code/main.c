@@ -5,6 +5,10 @@
 #include "wdt.h"
 //采样次数
 #define ADC_SAMPLE_COUNT              (10U)
+#define ADC_DISCARD_HIGH_COUNT        (2U)
+#define ADC_DISCARD_LOW_COUNT         (2U)
+#define ADC_FILTERED_SAMPLE_COUNT \
+    (ADC_SAMPLE_COUNT - ADC_DISCARD_HIGH_COUNT - ADC_DISCARD_LOW_COUNT)
 //电压量程
 #define ADC_REFERENCE_MV              (3300UL)
 //12位ADC满量程
@@ -22,7 +26,7 @@ uint16_t current_threshold_x10_ma2=3000U;
 //采样100ms间隔次数
 #define SAMPLE_INTERVAL_PART_COUNT    (3U)
 #define CURRENT_CONVERSION_DIVISOR \
-    ((ADC_FULL_SCALE * ADC_SAMPLE_COUNT * CURRENT_SENSE_RESISTOR_MOHM) / 1000UL)
+    ((ADC_FULL_SCALE * ADC_FILTERED_SAMPLE_COUNT * CURRENT_SENSE_RESISTOR_MOHM) / 1000UL)
 
 //采样充满及其限制
 #define full 3000U
@@ -63,14 +67,42 @@ static void ADC_InitCurrentInputs(void)
 static uint32_t ADC_ReadFilteredCurrentX10Ma(uint8_t channel)
 {
     uint8_t sample;
+    uint16_t adc_value;
+    uint16_t min_value1 = 0xFFFFU;
+    uint16_t min_value2 = 0xFFFFU;
+    uint16_t max_value1 = 0U;
+    uint16_t max_value2 = 0U;
     uint32_t adc_sum = 0UL;
 
     ADC_ConfigChannel(channel, ADC_DIV_4);
     for(sample = 0U; sample < ADC_SAMPLE_COUNT; sample++)
     {
         ADC_StartSWCVT();
-        adc_sum += ADC_GetResultQueryMode();
+        adc_value = ADC_GetResultQueryMode();
+        adc_sum += adc_value;
+
+        if(adc_value < min_value1)
+        {
+            min_value2 = min_value1;
+            min_value1 = adc_value;
+        }
+        else if(adc_value < min_value2)
+        {
+            min_value2 = adc_value;
+        }
+
+        if(adc_value > max_value1)
+        {
+            max_value2 = max_value1;
+            max_value1 = adc_value;
+        }
+        else if(adc_value > max_value2)
+        {
+            max_value2 = adc_value;
+        }
     }
+
+    adc_sum -= (uint32_t)min_value1 + min_value2 + max_value1 + max_value2;
 
     return (adc_sum * ADC_REFERENCE_MV * CURRENT_FIXED_POINT_SCALE) /
            CURRENT_CONVERSION_DIVISOR;

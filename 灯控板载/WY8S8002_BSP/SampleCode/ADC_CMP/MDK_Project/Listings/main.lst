@@ -1,4 +1,4 @@
-C51 COMPILER V9.60.0.0   MAIN                                                              09/07/2026 18:36:55 PAGE 1   
+C51 COMPILER V9.60.0.0   MAIN                                                              09/08/2026 08:43:13 PAGE 1   
 
 
 C51 COMPILER V9.60.0.0, COMPILATION OF MODULE MAIN
@@ -15,166 +15,200 @@ line level    source
    5          #include "wdt.h"
    6          //采样次数
    7          #define ADC_SAMPLE_COUNT              (10U)
-   8          //电压量程
-   9          #define ADC_REFERENCE_MV              (3300UL)
-  10          //12位ADC满量程
-  11          #define ADC_FULL_SCALE                (4095UL)
-  12          //电阻阻值
-  13          #define CURRENT_SENSE_RESISTOR_MOHM   (80UL)
-  14          //电流固定点缩放因子
-  15          #define CURRENT_FIXED_POINT_SCALE     (10UL)
-  16          //三个端口的电流阈值
-  17          uint16_t current_threshold_x10_ma0=3000U;
-  18          uint16_t current_threshold_x10_ma1=3000U;
-  19          uint16_t current_threshold_x10_ma2=3000U;
-  20          //采样间隔
-  21          #define SAMPLE_INTERVAL_PART_MS       (100U)
-  22          //采样100ms间隔次数
-  23          #define SAMPLE_INTERVAL_PART_COUNT    (3U)
-  24          #define CURRENT_CONVERSION_DIVISOR \
-  25              ((ADC_FULL_SCALE * ADC_SAMPLE_COUNT * CURRENT_SENSE_RESISTOR_MOHM) / 1000UL)
-  26          
-  27          //采样充满及其限制
-  28          #define full 3000U
-  29          #define limix 5000U
+   8          #define ADC_DISCARD_HIGH_COUNT        (2U)
+   9          #define ADC_DISCARD_LOW_COUNT         (2U)
+  10          #define ADC_FILTERED_SAMPLE_COUNT \
+  11              (ADC_SAMPLE_COUNT - ADC_DISCARD_HIGH_COUNT - ADC_DISCARD_LOW_COUNT)
+  12          //电压量程
+  13          #define ADC_REFERENCE_MV              (3300UL)
+  14          //12位ADC满量程
+  15          #define ADC_FULL_SCALE                (4095UL)
+  16          //电阻阻值
+  17          #define CURRENT_SENSE_RESISTOR_MOHM   (80UL)
+  18          //电流固定点缩放因子
+  19          #define CURRENT_FIXED_POINT_SCALE     (10UL)
+  20          //三个端口的电流阈值
+  21          uint16_t current_threshold_x10_ma0=3000U;
+  22          uint16_t current_threshold_x10_ma1=3000U;
+  23          uint16_t current_threshold_x10_ma2=3000U;
+  24          //采样间隔
+  25          #define SAMPLE_INTERVAL_PART_MS       (100U)
+  26          //采样100ms间隔次数
+  27          #define SAMPLE_INTERVAL_PART_COUNT    (3U)
+  28          #define CURRENT_CONVERSION_DIVISOR \
+  29              ((ADC_FULL_SCALE * ADC_FILTERED_SAMPLE_COUNT * CURRENT_SENSE_RESISTOR_MOHM) / 1000UL)
   30          
-  31          static void GPIO_InitLedOutputs(void);
-  32          static void ADC_InitCurrentInputs(void);
-  33          static uint32_t ADC_ReadFilteredCurrentX10Ma(uint8_t channel);
-  34          static void DelaySampleInterval(void);
-  35          
-  36          static void GPIO_InitLedOutputs(void)
-  37          {
-  38   1          PORT_SET_MUX(PIO00CFG, GPIO_MUX_MODE);
-  39   1          PORT_SET_MUX(PIO01CFG, GPIO_MUX_MODE);
-  40   1          // PORT_SET_MUX(PIO02CFG, GPIO_MUX_MODE);
-  41   1      
-  42   1          GPIO0_ConfigOutput(GPIO_PIN_0, GPIO_PP, GPIO_NOPULL, CURRENT_00);
-  43   1          GPIO0_ConfigOutput(GPIO_PIN_1, GPIO_PP, GPIO_NOPULL, CURRENT_00);
-  44   1          // GPIO0_ConfigOutput(GPIO_PIN_2, GPIO_PP, GPIO_NOPULL, CURRENT_00);
+  31          //采样充满及其限制
+  32          #define full 3000U
+  33          #define limix 5000U
+  34          
+  35          static void GPIO_InitLedOutputs(void);
+  36          static void ADC_InitCurrentInputs(void);
+  37          static uint32_t ADC_ReadFilteredCurrentX10Ma(uint8_t channel);
+  38          static void DelaySampleInterval(void);
+  39          
+  40          static void GPIO_InitLedOutputs(void)
+  41          {
+  42   1          PORT_SET_MUX(PIO00CFG, GPIO_MUX_MODE);
+  43   1          PORT_SET_MUX(PIO01CFG, GPIO_MUX_MODE);
+  44   1          // PORT_SET_MUX(PIO02CFG, GPIO_MUX_MODE);
   45   1      
-  46   1          P00 = OUTPUT_LOW;
-  47   1          P01 = OUTPUT_LOW;
-  48   1          // P02 = OUTPUT_LOW;
-  49   1      }
-  50          
-  51          static void ADC_InitCurrentInputs(void)
-  52          {
-  53   1          ADC_ConfigChannel(ADC_AIN6, ADC_DIV_4); /* P03 */
-  54   1          ADC_ConfigChannel(ADC_AIN5, ADC_DIV_4); /* P04 */
-C51 COMPILER V9.60.0.0   MAIN                                                              09/07/2026 18:36:55 PAGE 2   
+  46   1          GPIO0_ConfigOutput(GPIO_PIN_0, GPIO_PP, GPIO_NOPULL, CURRENT_00);
+  47   1          GPIO0_ConfigOutput(GPIO_PIN_1, GPIO_PP, GPIO_NOPULL, CURRENT_00);
+  48   1          // GPIO0_ConfigOutput(GPIO_PIN_2, GPIO_PP, GPIO_NOPULL, CURRENT_00);
+  49   1      
+  50   1          P00 = OUTPUT_LOW;
+  51   1          P01 = OUTPUT_LOW;
+  52   1          // P02 = OUTPUT_LOW;
+  53   1      }
+  54          
+C51 COMPILER V9.60.0.0   MAIN                                                              09/08/2026 08:43:13 PAGE 2   
 
-  55   1          // ADC_ConfigChannel(ADC_AIN4, ADC_DIV_4); /* P05 */
-  56   1          ADC_ADCCON1_VREF_SEL(ADC_INPUT_VREF_AVDD);
-  57   1          ADC_SMP_SEL(ADC_CLKP_8);
-  58   1          ADC_ConfigSWCVT();
-  59   1          ENABLE_ADC;
-  60   1          Timer0_Delay_ms(1U);
-  61   1      }
-  62          
-  63          static uint32_t ADC_ReadFilteredCurrentX10Ma(uint8_t channel)
-  64          {
-  65   1          uint8_t sample;
-  66   1          uint32_t adc_sum = 0UL;
-  67   1      
-  68   1          ADC_ConfigChannel(channel, ADC_DIV_4);
-  69   1          for(sample = 0U; sample < ADC_SAMPLE_COUNT; sample++)
-  70   1          {
-  71   2              ADC_StartSWCVT();
-  72   2              adc_sum += ADC_GetResultQueryMode();
-  73   2          }
-  74   1      
-  75   1          return (adc_sum * ADC_REFERENCE_MV * CURRENT_FIXED_POINT_SCALE) /
-  76   1                 CURRENT_CONVERSION_DIVISOR;
-  77   1      }
-  78          
-  79          static void DelaySampleInterval(void)
-  80          {
-  81   1          uint8_t part;
-  82   1      
-  83   1          for(part = 0U; part < SAMPLE_INTERVAL_PART_COUNT; part++)
-  84   1          {
-  85   2              Timer0_Delay_ms(SAMPLE_INTERVAL_PART_MS);
-  86   2          }
-  87   1      }
-  88          
-  89          int main(void)
-  90          {
-  91   1          uint32_t current_x10_ma0=0U;
-  92   1          uint32_t current_x10_ma1=0U;
-  93   1          // uint32_t current_x10_ma2=0U;
-  94   1          uint8_t sign0=0;
-  95   1          uint8_t sign1=0;
-  96   1          // uint8_t sign2=0;
-  97   1          System_ConfigCLK(SYSCLK_HRC, CLK_DIV_2,WAITS_INST_VDD_LT3600MV_CLK_GE15_LT20M);
-  98   1          GPIO_InitLedOutputs();
-  99   1          ADC_InitCurrentInputs();
- 100   1          WDT_ConfigMode(WDT_DIV_1024, ENABLE_OVER_RST, WDT_IDLE_SLEEP_MODE);
- 101   1          WDT_Run(ENABLE_WDT);
- 102   1          //延迟等待硬件稳定
- 103   1          Timer0_Delay_ms(5);
- 104   1          while(1)
- 105   1          {
- 106   2              //端口一模拟输入
- 107   2              current_x10_ma0 = ADC_ReadFilteredCurrentX10Ma(ADC_AIN6);
- 108   2              P00 = (current_x10_ma0 > current_threshold_x10_ma0) ? OUTPUT_HIGH : OUTPUT_LOW;
- 109   2              sign0 = P00;
- 110   2              //进入特殊处理环节
- 111   2              if(sign0==0&&current_x10_ma0<full)
- 112   2              {
- 113   3                  current_threshold_x10_ma0=limix;
- 114   3              }
- 115   2              //退出特殊处理环节
- 116   2              else if(sign0==1&&current_x10_ma0>limix)
-C51 COMPILER V9.60.0.0   MAIN                                                              09/07/2026 18:36:55 PAGE 3   
+  55          static void ADC_InitCurrentInputs(void)
+  56          {
+  57   1          ADC_ConfigChannel(ADC_AIN6, ADC_DIV_4); /* P03 */
+  58   1          ADC_ConfigChannel(ADC_AIN5, ADC_DIV_4); /* P04 */
+  59   1          // ADC_ConfigChannel(ADC_AIN4, ADC_DIV_4); /* P05 */
+  60   1          ADC_ADCCON1_VREF_SEL(ADC_INPUT_VREF_AVDD);
+  61   1          ADC_SMP_SEL(ADC_CLKP_8);
+  62   1          ADC_ConfigSWCVT();
+  63   1          ENABLE_ADC;
+  64   1          Timer0_Delay_ms(1U);
+  65   1      }
+  66          
+  67          static uint32_t ADC_ReadFilteredCurrentX10Ma(uint8_t channel)
+  68          {
+  69   1          uint8_t sample;
+  70   1          uint16_t adc_value;
+  71   1          uint16_t min_value1 = 0xFFFFU;
+  72   1          uint16_t min_value2 = 0xFFFFU;
+  73   1          uint16_t max_value1 = 0U;
+  74   1          uint16_t max_value2 = 0U;
+  75   1          uint32_t adc_sum = 0UL;
+  76   1      
+  77   1          ADC_ConfigChannel(channel, ADC_DIV_4);
+  78   1          for(sample = 0U; sample < ADC_SAMPLE_COUNT; sample++)
+  79   1          {
+  80   2              ADC_StartSWCVT();
+  81   2              adc_value = ADC_GetResultQueryMode();
+  82   2              adc_sum += adc_value;
+  83   2      
+  84   2              if(adc_value < min_value1)
+  85   2              {
+  86   3                  min_value2 = min_value1;
+  87   3                  min_value1 = adc_value;
+  88   3              }
+  89   2              else if(adc_value < min_value2)
+  90   2              {
+  91   3                  min_value2 = adc_value;
+  92   3              }
+  93   2      
+  94   2              if(adc_value > max_value1)
+  95   2              {
+  96   3                  max_value2 = max_value1;
+  97   3                  max_value1 = adc_value;
+  98   3              }
+  99   2              else if(adc_value > max_value2)
+ 100   2              {
+ 101   3                  max_value2 = adc_value;
+ 102   3              }
+ 103   2          }
+ 104   1      
+ 105   1          adc_sum -= (uint32_t)min_value1 + min_value2 + max_value1 + max_value2;
+ 106   1      
+ 107   1          return (adc_sum * ADC_REFERENCE_MV * CURRENT_FIXED_POINT_SCALE) /
+ 108   1                 CURRENT_CONVERSION_DIVISOR;
+ 109   1      }
+ 110          
+ 111          static void DelaySampleInterval(void)
+ 112          {
+ 113   1          uint8_t part;
+ 114   1      
+ 115   1          for(part = 0U; part < SAMPLE_INTERVAL_PART_COUNT; part++)
+ 116   1          {
+C51 COMPILER V9.60.0.0   MAIN                                                              09/08/2026 08:43:13 PAGE 3   
 
- 117   2              {
- 118   3                  current_threshold_x10_ma0=full;
- 119   3              }
- 120   2      
- 121   2      
- 122   2              //端口二模拟输入
- 123   2              current_x10_ma1 = ADC_ReadFilteredCurrentX10Ma(ADC_AIN5);
- 124   2              P01 = (current_x10_ma1 > current_threshold_x10_ma1) ? OUTPUT_HIGH : OUTPUT_LOW;
- 125   2              sign1 = P01;
- 126   2              if(sign1==0&&current_x10_ma1<full)
- 127   2              {
- 128   3                  current_threshold_x10_ma1=limix;
- 129   3              }
- 130   2              //退出特殊处理环节
- 131   2              else if(sign1==1&&current_x10_ma1>limix)
- 132   2              {
- 133   3                  current_threshold_x10_ma1=full;
- 134   3              }
- 135   2      
- 136   2      
- 137   2               //端口三模拟输入
- 138   2              /*current_x10_ma2 = ADC_ReadFilteredCurrentX10Ma(ADC_AIN4);
- 139   2              if(sign2==1&&current_x10_ma2<full)
- 140   2              {
- 141   2                  current_threshold_x10_ma2=limix;
- 142   2              }
- 143   2              //退出特殊处理环节
- 144   2              else if(sign2==1&&current_x10_ma2>limix)
- 145   2              {
- 146   2                  current_threshold_x10_ma2=full;
- 147   2              }
- 148   2              P02 = (current_x10_ma2 > current_threshold_x10_ma2) ? OUTPUT_HIGH : OUTPUT_LOW;
- 149   2              sign2 = (current_x10_ma2 > current_threshold_x10_ma2) ? 1 : 0;*/
- 150   2      
- 151   2              DelaySampleInterval();
- 152   2              //看门狗复位
- 153   2              WDT_ClearWDT(); 
- 154   2          }
- 155   1      }
+ 117   2              Timer0_Delay_ms(SAMPLE_INTERVAL_PART_MS);
+ 118   2          }
+ 119   1      }
+ 120          
+ 121          int main(void)
+ 122          {
+ 123   1          uint32_t current_x10_ma0=0U;
+ 124   1          uint32_t current_x10_ma1=0U;
+ 125   1          // uint32_t current_x10_ma2=0U;
+ 126   1          uint8_t sign0=0;
+ 127   1          uint8_t sign1=0;
+ 128   1          // uint8_t sign2=0;
+ 129   1          System_ConfigCLK(SYSCLK_HRC, CLK_DIV_2,WAITS_INST_VDD_LT3600MV_CLK_GE15_LT20M);
+ 130   1          GPIO_InitLedOutputs();
+ 131   1          ADC_InitCurrentInputs();
+ 132   1          WDT_ConfigMode(WDT_DIV_1024, ENABLE_OVER_RST, WDT_IDLE_SLEEP_MODE);
+ 133   1          WDT_Run(ENABLE_WDT);
+ 134   1          //延迟等待硬件稳定
+ 135   1          Timer0_Delay_ms(5);
+ 136   1          while(1)
+ 137   1          {
+ 138   2              //端口一模拟输入
+ 139   2              current_x10_ma0 = ADC_ReadFilteredCurrentX10Ma(ADC_AIN6);
+ 140   2              P00 = (current_x10_ma0 > current_threshold_x10_ma0) ? OUTPUT_HIGH : OUTPUT_LOW;
+ 141   2              sign0 = P00;
+ 142   2              //进入特殊处理环节
+ 143   2              if(sign0==0&&current_x10_ma0<full)
+ 144   2              {
+ 145   3                  current_threshold_x10_ma0=limix;
+ 146   3              }
+ 147   2              //退出特殊处理环节
+ 148   2              else if(sign0==1&&current_x10_ma0>limix)
+ 149   2              {
+ 150   3                  current_threshold_x10_ma0=full;
+ 151   3              }
+ 152   2      
+ 153   2      
+ 154   2              //端口二模拟输入
+ 155   2              current_x10_ma1 = ADC_ReadFilteredCurrentX10Ma(ADC_AIN5);
+ 156   2              P01 = (current_x10_ma1 > current_threshold_x10_ma1) ? OUTPUT_HIGH : OUTPUT_LOW;
+ 157   2              sign1 = P01;
+ 158   2              if(sign1==0&&current_x10_ma1<full)
+ 159   2              {
+ 160   3                  current_threshold_x10_ma1=limix;
+ 161   3              }
+ 162   2              //退出特殊处理环节
+ 163   2              else if(sign1==1&&current_x10_ma1>limix)
+ 164   2              {
+ 165   3                  current_threshold_x10_ma1=full;
+ 166   3              }
+ 167   2      
+ 168   2      
+ 169   2               //端口三模拟输入
+ 170   2              /*current_x10_ma2 = ADC_ReadFilteredCurrentX10Ma(ADC_AIN4);
+ 171   2              if(sign2==1&&current_x10_ma2<full)
+ 172   2              {
+ 173   2                  current_threshold_x10_ma2=limix;
+ 174   2              }
+ 175   2              //退出特殊处理环节
+ 176   2              else if(sign2==1&&current_x10_ma2>limix)
+ 177   2              {
+ 178   2                  current_threshold_x10_ma2=full;
+C51 COMPILER V9.60.0.0   MAIN                                                              09/08/2026 08:43:13 PAGE 4   
+
+ 179   2              }
+ 180   2              P02 = (current_x10_ma2 > current_threshold_x10_ma2) ? OUTPUT_HIGH : OUTPUT_LOW;
+ 181   2              sign2 = (current_x10_ma2 > current_threshold_x10_ma2) ? 1 : 0;*/
+ 182   2      
+ 183   2              DelaySampleInterval();
+ 184   2              //看门狗复位
+ 185   2              WDT_ClearWDT(); 
+ 186   2          }
+ 187   1      }
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =    453    ----
+   CODE SIZE        =    615    ----
    CONSTANT SIZE    =   ----    ----
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----
-   DATA SIZE        =      6      16
+   DATA SIZE        =      6      24
    IDATA SIZE       =   ----    ----
    BIT SIZE         =   ----    ----
    EDATA SIZE       =   ----    ----

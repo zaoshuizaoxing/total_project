@@ -1,4 +1,4 @@
-C51 COMPILER V9.60.0.0   GPIO                                                              09/07/2026 18:36:54 PAGE 1   
+C51 COMPILER V9.60.0.0   GPIO                                                              09/08/2026 08:43:13 PAGE 1   
 
 
 C51 COMPILER V9.60.0.0, COMPILATION OF MODULE GPIO
@@ -62,7 +62,7 @@ line level    source
   52           * -# CURRENT_01
   53           * -# CURRENT_02
   54           * -# CURRENT_03
-C51 COMPILER V9.60.0.0   GPIO                                                              09/07/2026 18:36:54 PAGE 2   
+C51 COMPILER V9.60.0.0   GPIO                                                              09/08/2026 08:43:13 PAGE 2   
 
   55           * Pin number GPIO_PIN_2 - GPIO_PIN_7��
   56           * -# CURRENT_00
@@ -126,7 +126,7 @@ line level    source
  114          void GPIO_ConfigOutput(uint8_t u8PinNum, uint8_t u8opMode, uint16_t u16udMode, uint8_t u8crtMode)
  115          {
  116   1          uint8_t group = u8PinNum / 10;
-C51 COMPILER V9.60.0.0   GPIO                                                              09/07/2026 18:36:54 PAGE 3   
+C51 COMPILER V9.60.0.0   GPIO                                                              09/08/2026 08:43:13 PAGE 3   
 
  117   1          uint8_t pin   = u8PinNum % 10;
  118   1          switch(group)
@@ -190,7 +190,7 @@ line level    source
  176   1          P2DIR &= ~(1 << u8PinNum);
  177   1      }
  178          
-C51 COMPILER V9.60.0.0   GPIO                                                              09/07/2026 18:36:54 PAGE 4   
+C51 COMPILER V9.60.0.0   GPIO                                                              09/08/2026 08:43:13 PAGE 4   
 
  179          /**
  180           * Configure PORT as Input Mode with Pull-up or Pull-down Resistors
@@ -254,7 +254,7 @@ line level    source
  238          
  239          /**
  240           * Configure PORT Interrupt Mode
-C51 COMPILER V9.60.0.0   GPIO                                                              09/07/2026 18:36:54 PAGE 5   
+C51 COMPILER V9.60.0.0   GPIO                                                              09/08/2026 08:43:13 PAGE 5   
 
  241           * @param[in] u8PinNum Pin number: 0~7, 10~17
  242           * @param[in] u8PinIntMode Interrupt trigger mode

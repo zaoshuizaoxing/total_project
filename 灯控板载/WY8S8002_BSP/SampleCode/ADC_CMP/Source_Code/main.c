@@ -17,20 +17,22 @@
 #define CURRENT_SENSE_RESISTOR_MOHM   (80UL)
 //电流固定点缩放因子
 #define CURRENT_FIXED_POINT_SCALE     (10UL)
-//三个端口的电流阈值
+//三个端口的电流判断值
 uint16_t current_threshold_x10_ma0=3000U;
 uint16_t current_threshold_x10_ma1=3000U;
-uint16_t current_threshold_x10_ma2=3000U;
+uint16_t current_threshold_x10_ma2=4000U;
 //采样间隔
-#define SAMPLE_INTERVAL_PART_MS       (100U)
+#define SAMPLE_INTERVAL_PART_MS       (10U)
 //采样100ms间隔次数
-#define SAMPLE_INTERVAL_PART_COUNT    (3U)
+#define SAMPLE_INTERVAL_PART_COUNT    (1U)
 #define CURRENT_CONVERSION_DIVISOR \
     ((ADC_FULL_SCALE * ADC_FILTERED_SAMPLE_COUNT * CURRENT_SENSE_RESISTOR_MOHM) / 1000UL)
 
-//采样充满及其限制
-#define full 3000U
+//变化值和钳位值
+#define full 3500U
 #define limix 5000U
+//钳位次数
+#define NEW_BATTERY_CONFIRM_COUNT 30U
 
 static void GPIO_InitLedOutputs(void);
 static void ADC_InitCurrentInputs(void);
@@ -123,49 +125,108 @@ int main(void)
     uint32_t current_x10_ma0=0U;
     uint32_t current_x10_ma1=0U;
     // uint32_t current_x10_ma2=0U;
-    uint8_t sign0=0;
-    uint8_t sign1=0;
+    uint8_t confirm_count0=0U;
+    uint8_t confirm_count1=0U;
     // uint8_t sign2=0;
     System_ConfigCLK(SYSCLK_HRC, CLK_DIV_2,WAITS_INST_VDD_LT3600MV_CLK_GE15_LT20M);
     GPIO_InitLedOutputs();
     ADC_InitCurrentInputs();
-    WDT_ConfigMode(WDT_DIV_1024, ENABLE_OVER_RST, WDT_IDLE_SLEEP_MODE);
-    WDT_Run(ENABLE_WDT);
+    // WDT_ConfigMode(WDT_DIV_1024, ENABLE_OVER_RST, WDT_IDLE_SLEEP_MODE);
+    // WDT_Run(ENABLE_WDT);
     //延迟等待硬件稳定
     Timer0_Delay_ms(5);
     while(1)
     {
         //端口一模拟输入
         current_x10_ma0 = ADC_ReadFilteredCurrentX10Ma(ADC_AIN6);
-        P00 = (current_x10_ma0 > current_threshold_x10_ma0) ? OUTPUT_HIGH : OUTPUT_LOW;
-        sign0 = P00;
-        //进入特殊处理环节
-        if(sign0==0&&current_x10_ma0<full)
+        if(current_threshold_x10_ma0 == full)
         {
-            current_threshold_x10_ma0=limix;
+            confirm_count0 = 0U;
+            /* 正常充电阶段 */
+            if(current_x10_ma0 < full)
+            {
+                /* 充满：亮绿灯并进入钳位状态 */
+                P00 = OUTPUT_LOW;
+                current_threshold_x10_ma0 = limix;
+            }
+            else
+            {
+                /* 电流尚未降到full以下 */
+                P00 = OUTPUT_HIGH;
+            }
         }
-        //退出特殊处理环节
-        else if(sign0==1&&current_x10_ma0>limix)
+        else
         {
-            current_threshold_x10_ma0=full;
+            /* 充满后的钳位阶段 */
+            if(current_x10_ma0 > limix)
+            {
+                confirm_count0++;
+                if(confirm_count0 >= NEW_BATTERY_CONFIRM_COUNT)
+                {
+                    /* 检测到新电池：亮红灯并恢复正常判断值 */
+                    P00 = OUTPUT_HIGH;
+                    current_threshold_x10_ma0 = full;
+                    confirm_count0 = 0U;
+                }
+                else
+                {
+                    P00 = OUTPUT_LOW;
+                }
+            }
+            else
+            {
+                /* 波动未超过钳位值，保持绿灯 */
+                P00 = OUTPUT_LOW;
+                confirm_count0 = 0U;
+            }
         }
 
 
         //端口二模拟输入
         current_x10_ma1 = ADC_ReadFilteredCurrentX10Ma(ADC_AIN5);
-        P01 = (current_x10_ma1 > current_threshold_x10_ma1) ? OUTPUT_HIGH : OUTPUT_LOW;
-        sign1 = P01;
-        if(sign1==0&&current_x10_ma1<full)
+        if(current_threshold_x10_ma1 == full)
         {
-            current_threshold_x10_ma1=limix;
+            confirm_count1 = 0U;
+            /* 正常充电阶段 */
+            if(current_x10_ma1 < full)
+            {
+                /* 充满：亮绿灯并进入钳位状态 */
+                P01 = OUTPUT_LOW;
+                current_threshold_x10_ma1 = limix;
+            }
+            else
+            {
+                /* 电流尚未降到full以下 */
+                P01 = OUTPUT_HIGH;
+            }
         }
-        //退出特殊处理环节
-        else if(sign1==1&&current_x10_ma1>limix)
+        else
         {
-            current_threshold_x10_ma1=full;
+            /* 充满后的钳位阶段 */
+            if(current_x10_ma1 > limix)
+            {
+                confirm_count1++;
+                if(confirm_count1 >= NEW_BATTERY_CONFIRM_COUNT)
+                {
+                    /* 检测到新电池：亮红灯并恢复正常判断值 */
+                    P01 = OUTPUT_HIGH;
+                    current_threshold_x10_ma1 = full;
+                    confirm_count1 = 0U;
+                }
+                else
+                {
+                    P01 = OUTPUT_LOW;
+                }
+            }
+            else
+            {
+                /* 波动未超过钳位值，保持绿灯 */
+                P01 = OUTPUT_LOW;
+                confirm_count1 = 0U;
+            }
         }
 
-
+        
          //端口三模拟输入
         /*current_x10_ma2 = ADC_ReadFilteredCurrentX10Ma(ADC_AIN4);
         if(sign2==1&&current_x10_ma2<full)
@@ -181,7 +242,7 @@ int main(void)
         sign2 = (current_x10_ma2 > current_threshold_x10_ma2) ? 1 : 0;*/
 
         DelaySampleInterval();
-        //看门狗复位
-        WDT_ClearWDT(); 
+        // //看门狗复位
+        // WDT_ClearWDT(); 
     }
 }

@@ -1,4 +1,4 @@
-LX51 LINKER/LOCATER V4.66.97.0                                                          09/08/2026  08:43:14  PAGE 1
+LX51 LINKER/LOCATER V4.66.97.0                                                          09/09/2026  08:38:15  PAGE 1
 
 
 LX51 LINKER/LOCATER V4.66.97.0, INVOKED BY:
@@ -61,13 +61,13 @@ BASE        START       END         USED      MEMORY CLASS
 ==========================================================
 X:000000H   X:000000H   X:0001FFH             XDATA
 X:000000H   X:000000H   X:0001FFH             HDATA
-C:000000H   C:000000H   C:001FFFH   000772H   CODE
+C:000000H   C:000000H   C:001FFFH   000727H   CODE
 C:000000H   C:000000H   C:001FFFH             CONST
 C:000000H   C:000000H   C:001FFFH             ECODE
 C:000000H   C:000000H   C:001FFFH             HCONST
 I:000000H   I:000000H   I:0000FFH   000001H   IDATA
 I:000000H   I:000000H   I:00007FH   00002AH   DATA
-LX51 LINKER/LOCATER V4.66.97.0                                                        09/08/2026  08:43:14  PAGE 2
+LX51 LINKER/LOCATER V4.66.97.0                                                        09/09/2026  08:38:15  PAGE 2
 
 
 
@@ -89,23 +89,20 @@ START     STOP      LENGTH    ALIGN  RELOC    MEMORY CLASS   SEGMENT NAME
 * * * * * * * * * * *   C O D E   M E M O R Y   * * * * * * * * * * * * *
 000000H   000002H   000003H   ---    OFFS..   CODE           ?CO??C_STARTUP?0
 000003H   0001F0H   0001EEH   BYTE   UNIT     CODE           ?C?LIB_CODE
-0001F1H   000307H   000117H   BYTE   UNIT     CODE           ?PR?MAIN?MAIN
-000308H   000401H   0000FAH   BYTE   UNIT     CODE           ?PR?_ADC_READFILTEREDCURRENTX10MA?MAIN
-000402H   0004BCH   0000BBH   BYTE   UNIT     CODE           ?PR?_ADC_CONFIGCHANNEL?ADC
-0004BDH   000559H   00009DH   BYTE   UNIT     CODE           ?C_C51STARTUP
-00055AH   0005E6H   00008DH   BYTE   UNIT     CODE           ?PR?_SYSTEM_CONFIGCLK?COMMON
-0005E7H   000666H   000080H   BYTE   UNIT     CODE           ?PR?_GPIO0_CONFIGOUTPUT?GPIO
-000667H   00068EH   000028H   BYTE   UNIT     CODE           ?PR?ADC_GETRESULTQUERYMODE?ADC
-00068FH   0006B2H   000024H   BYTE   UNIT     CODE           ?PR?_WDT_CONFIGMODE?WDT
-0006B3H   0006D2H   000020H   BYTE   UNIT     CODE           ?PR?GPIO_INITLEDOUTPUTS?MAIN
-0006D3H   0006F1H   00001FH   BYTE   UNIT     CODE           ?PR?ADC_INITCURRENTINPUTS?MAIN
-0006F2H   00070FH   00001EH   BYTE   UNIT     CODE           ?PR?_TIMER0_DELAY_MS?DELAY
-000710H   000727H   000018H   BYTE   UNIT     CODE           ?PR?ADC_STARTSWCVT?ADC
-000728H   00073EH   000017H   BYTE   UNIT     CODE           ?PR?DELAYSAMPLEINTERVAL?MAIN
-00073FH   000751H   000013H   BYTE   UNIT     CODE           ?C_INITSEG
-000752H   000761H   000010H   BYTE   UNIT     CODE           ?PR?_WDT_RUN?WDT
-000762H   00076DH   00000CH   BYTE   UNIT     CODE           ?PR?WDT_CLEARWDT?WDT
-00076EH   000771H   000004H   BYTE   UNIT     CODE           ?PR?ADC_CONFIGSWCVT?ADC
+0001F1H   0002FCH   00010CH   BYTE   UNIT     CODE           ?PR?MAIN?MAIN
+0002FDH   0003F6H   0000FAH   BYTE   UNIT     CODE           ?PR?_ADC_READFILTEREDCURRENTX10MA?MAIN
+0003F7H   0004B1H   0000BBH   BYTE   UNIT     CODE           ?PR?_ADC_CONFIGCHANNEL?ADC
+0004B2H   00054EH   00009DH   BYTE   UNIT     CODE           ?C_C51STARTUP
+00054FH   0005DBH   00008DH   BYTE   UNIT     CODE           ?PR?_SYSTEM_CONFIGCLK?COMMON
+0005DCH   00065BH   000080H   BYTE   UNIT     CODE           ?PR?_GPIO0_CONFIGOUTPUT?GPIO
+00065CH   000683H   000028H   BYTE   UNIT     CODE           ?PR?ADC_GETRESULTQUERYMODE?ADC
+000684H   0006A3H   000020H   BYTE   UNIT     CODE           ?PR?GPIO_INITLEDOUTPUTS?MAIN
+0006A4H   0006C2H   00001FH   BYTE   UNIT     CODE           ?PR?ADC_INITCURRENTINPUTS?MAIN
+0006C3H   0006E0H   00001EH   BYTE   UNIT     CODE           ?PR?_TIMER0_DELAY_MS?DELAY
+0006E1H   0006F8H   000018H   BYTE   UNIT     CODE           ?PR?ADC_STARTSWCVT?ADC
+0006F9H   00070FH   000017H   BYTE   UNIT     CODE           ?PR?DELAYSAMPLEINTERVAL?MAIN
+000710H   000722H   000013H   BYTE   UNIT     CODE           ?C_INITSEG
+000723H   000726H   000004H   BYTE   UNIT     CODE           ?PR?ADC_CONFIGSWCVT?ADC
 
 * * * * * * * * *   R E M O V E D     S E G M E N T S   * * * * * * * *
    *DEL*:           0000C0H   BYTE   UNIT     CODE           ?PR?_GPIO1_CONFIGOUTPUT?GPIO
@@ -134,8 +131,11 @@ START     STOP      LENGTH    ALIGN  RELOC    MEMORY CLASS   SEGMENT NAME
    *DEL*:           00001BH   BYTE   UNIT     CODE           ?PR?_TIMER2_CONFIGCAP1MODE?TIMER
    *DEL*:           00001CH   BYTE   UNIT     CODE           ?PR?_TIMER2_CONFIGCAP2MODE?TIMER
    *DEL*:           00001FH   BYTE   UNIT     CODE           ?PR?_TIMER2_CONFIGCAP3MODE?TIMER
+   *DEL*:           000024H   BYTE   UNIT     CODE           ?PR?_WDT_CONFIGMODE?WDT
+   *DEL*:           000010H   BYTE   UNIT     CODE           ?PR?_WDT_RUN?WDT
+   *DEL*:           00000CH   BYTE   UNIT     CODE           ?PR?WDT_CLEARWDT?WDT
    *DEL*:           000004H   BYTE   UNIT     CODE           ?PR?WDT_CLEARTF?WDT
-LX51 LINKER/LOCATER V4.66.97.0                                                        09/08/2026  08:43:14  PAGE 3
+LX51 LINKER/LOCATER V4.66.97.0                                                        09/09/2026  08:38:15  PAGE 3
 
 
    *DEL*:           00003CH   BYTE   UNIT     CODE           ?PR?_PWM_CONFIGINT?PWM
@@ -164,12 +164,9 @@ MAIN/MAIN                               ----- -----  0008H 0011H
   +--> _SYSTEM_CONFIGCLK/COMMON
   +--> GPIO_INITLEDOUTPUTS/MAIN
   +--> ADC_INITCURRENTINPUTS/MAIN
-  +--> _WDT_CONFIGMODE/WDT
-  +--> _WDT_RUN/WDT
   +--> _TIMER0_DELAY_MS/DELAY
   +--> _ADC_READFILTEREDCURRENTX10MA/MAIN
   +--> DELAYSAMPLEINTERVAL/MAIN
-  +--> WDT_CLEARWDT/WDT
 
 _SYSTEM_CONFIGCLK/COMMON                ----- -----  ----- -----
 
@@ -189,10 +186,6 @@ ADC_CONFIGSWCVT/ADC                     ----- -----  ----- -----
 
 _TIMER0_DELAY_MS/DELAY                  ----- -----  ----- -----
 
-_WDT_CONFIGMODE/WDT                     ----- -----  ----- -----
-
-_WDT_RUN/WDT                            ----- -----  ----- -----
-
 _ADC_READFILTEREDCURRENTX10MA/MAIN      ----- -----  0012H 001EH
   +--> _ADC_CONFIGCHANNEL/ADC
   +--> ADC_STARTSWCVT/ADC
@@ -203,18 +196,16 @@ ADC_STARTSWCVT/ADC                      ----- -----  ----- -----
 ADC_GETRESULTQUERYMODE/ADC              ----- -----  ----- -----
 
 DELAYSAMPLEINTERVAL/MAIN                ----- -----  0012H 0012H
-LX51 LINKER/LOCATER V4.66.97.0                                                        09/08/2026  08:43:14  PAGE 4
-
-
   +--> _TIMER0_DELAY_MS/DELAY
-
-WDT_CLEARWDT/WDT                        ----- -----  ----- -----
 
 ?C_INITSEG                              ----- -----  ----- -----
 
 
 
 PUBLIC SYMBOLS OF MODULE:  .\Objects\WY8S8002XX (?C_STARTUP)
+LX51 LINKER/LOCATER V4.66.97.0                                                        09/09/2026  08:38:15  PAGE 4
+
+
 
 
       VALUE       CLASS    TYPE      PUBLIC SYMBOL NAME
@@ -234,14 +225,14 @@ PUBLIC SYMBOLS OF MODULE:  .\Objects\WY8S8002XX (?C_STARTUP)
       010001DEH   CODE     ---       ?C?ULSHR
       00000000H   NUMBER   ---       ?C?XDATASEG
       00000029H   DATA     ---       ?C_IBP
-      01000515H   CODE     ---       ?C_START
+      0100050AH   CODE     ---       ?C_START
       01000000H   CODE     ---       ?C_STARTUP
-      01000402H   CODE     ---       _ADC_ConfigChannel
+      010003F7H   CODE     ---       _ADC_ConfigChannel
 *DEL*:00000000H   CODE     ---       _ADC_ConfigCMP
 *DEL*:00000000H   CODE     ---       _ADC_ConfigHWCVT
 *DEL*:00000000H   CODE     ---       _GPIO0_ConfigInput
 *DEL*:00000000H   CODE     ---       _GPIO0_ConfigINT
-      010005E7H   CODE     ---       _GPIO0_ConfigOutput
+      010005DCH   CODE     ---       _GPIO0_ConfigOutput
 *DEL*:00000000H   CODE     ---       _GPIO1_ConfigInput
 *DEL*:00000000H   CODE     ---       _GPIO1_ConfigINT
 *DEL*:00000000H   CODE     ---       _GPIO1_ConfigOutput
@@ -256,24 +247,21 @@ PUBLIC SYMBOLS OF MODULE:  .\Objects\WY8S8002XX (?C_STARTUP)
 *DEL*:00000000H   CODE     ---       _PWM_ConfigINT
 *DEL*:00000000H   CODE     ---       _PWM_ConfigMASKOutputLevel
 *DEL*:00000000H   CODE     ---       _PWM_StartLoad
-      0100055AH   CODE     ---       _System_ConfigCLK
+      0100054FH   CODE     ---       _System_ConfigCLK
 *DEL*:00000000H   CODE     ---       _TIMER0_ConfigMode
-      010006F2H   CODE     ---       _Timer0_Delay_ms
+      010006C3H   CODE     ---       _Timer0_Delay_ms
 *DEL*:00000000H   CODE     ---       _TIMER1_ConfigMode
 *DEL*:00000000H   CODE     ---       _TIMER2_ConfigCap0Mode
 *DEL*:00000000H   CODE     ---       _TIMER2_ConfigCap1Mode
 *DEL*:00000000H   CODE     ---       _TIMER2_ConfigCap2Mode
 *DEL*:00000000H   CODE     ---       _TIMER2_ConfigCap3Mode
-      0100068FH   CODE     ---       _WDT_ConfigMode
-      01000752H   CODE     ---       _WDT_Run
+*DEL*:00000000H   CODE     ---       _WDT_ConfigMode
+*DEL*:00000000H   CODE     ---       _WDT_Run
 *SFR* 000000D0H.6 DATA     BIT       AC
 *SFR* 000000E0H   DATA     BYTE      ACC
-      0100076EH   CODE     ---       ADC_ConfigSWCVT
-      01000667H   CODE     ---       ADC_GetResultQueryMode
-      01000710H   CODE     ---       ADC_StartSWCVT
-LX51 LINKER/LOCATER V4.66.97.0                                                        09/08/2026  08:43:14  PAGE 5
-
-
+      01000723H   CODE     ---       ADC_ConfigSWCVT
+      0100065CH   CODE     ---       ADC_GetResultQueryMode
+      010006E1H   CODE     ---       ADC_StartSWCVT
 *SFR* 000000AEH   DATA     BYTE      ADCCON0
 *SFR* 000000B1H   DATA     BYTE      ADCCON1
 *SFR* 000000B2H   DATA     BYTE      ADCCON2
@@ -283,6 +271,9 @@ PUBLIC SYMBOLS OF MODULE:  .\Objects\WY8S8002XX (?C_STARTUP)
 *SFR* 000000AFH   DATA     BYTE      ADCMPL
 *SFR* 000000B0H.0 DATA     BIT       ADCMPO
 *SFR* 000000B0H.1 DATA     BIT       ADCMPPS
+LX51 LINKER/LOCATER V4.66.97.0                                                        09/09/2026  08:38:15  PAGE 5
+
+
 *SFR* 000000B4H   DATA     BYTE      ADCRH
 *SFR* 000000B5H   DATA     BYTE      ADCRL
 *SFR* 000000B0H.5 DATA     BIT       ADCSC
@@ -339,9 +330,6 @@ PUBLIC SYMBOLS OF MODULE:  .\Objects\WY8S8002XX (?C_STARTUP)
 *SFR* 000000D0H.0 DATA     BIT       P
 *SFR* 00000080H   DATA     BYTE      P0
 *SFR* 00000080H.0 DATA     BIT       P00
-LX51 LINKER/LOCATER V4.66.97.0                                                        09/08/2026  08:43:14  PAGE 6
-
-
 *SFR* 00000080H.1 DATA     BIT       P01
 *SFR* 00000080H.2 DATA     BIT       P02
 *SFR* 00000080H.3 DATA     BIT       P03
@@ -351,6 +339,9 @@ PUBLIC SYMBOLS OF MODULE:  .\Objects\WY8S8002XX (?C_STARTUP)
 *SFR* 00000080H.7 DATA     BIT       P07
 *SFR* 000000FAH   DATA     BYTE      P0DIR
 *SFR* 000000FEH   DATA     BYTE      P0DR
+LX51 LINKER/LOCATER V4.66.97.0                                                        09/09/2026  08:38:15  PAGE 6
+
+
 *SFR* 000000FBH   DATA     BYTE      P0OD
 *SFR* 000000FCH   DATA     BYTE      P0RD
 *SFR* 000000FDH   DATA     BYTE      P0UP
@@ -407,9 +398,6 @@ PUBLIC SYMBOLS OF MODULE:  .\Objects\WY8S8002XX (?C_STARTUP)
 *SFR* 000000C8H.7 DATA     BIT       PIO1IF7
 *SFR* 000000B8H.4 DATA     BIT       PS
 *SFR* 000000B8H.6 DATA     BIT       PS1
-LX51 LINKER/LOCATER V4.66.97.0                                                        09/08/2026  08:43:14  PAGE 7
-
-
 *SFR* 000000D0H   DATA     BYTE      PSW
 *SFR* 000000B8H.3 DATA     BIT       PT0
 *SFR* 000000B8H.5 DATA     BIT       PT1
@@ -419,6 +407,9 @@ PUBLIC SYMBOLS OF MODULE:  .\Objects\WY8S8002XX (?C_STARTUP)
 *SFR* 000000C1H   DATA     BYTE      PWMCON
 *SFR* 000000D5H   DATA     BYTE      PWMD0H
 *SFR* 000000D4H   DATA     BYTE      PWMD0L
+LX51 LINKER/LOCATER V4.66.97.0                                                        09/09/2026  08:38:15  PAGE 7
+
+
 *SFR* 000000D7H   DATA     BYTE      PWMD1H
 *SFR* 000000D6H   DATA     BYTE      PWMD1L
 *SFR* 000000D9H   DATA     BYTE      PWMD2H
@@ -475,9 +466,6 @@ PUBLIC SYMBOLS OF MODULE:  .\Objects\WY8S8002XX (?C_STARTUP)
 *SFR* 000000BCH   DATA     BYTE      SPIMOD
 *SFR* 000000BEH   DATA     BYTE      SPIRDR
 *SFR* 000000BDH   DATA     BYTE      SPISR
-LX51 LINKER/LOCATER V4.66.97.0                                                        09/08/2026  08:43:14  PAGE 8
-
-
 *SFR* 000000BFH   DATA     BYTE      SPITDR
 *SFR* 0000008EH   DATA     BYTE      SWTCON
 *SFR* 0000008FH   DATA     BYTE      SWTR
@@ -487,6 +475,9 @@ PUBLIC SYMBOLS OF MODULE:  .\Objects\WY8S8002XX (?C_STARTUP)
 *DEL*:00000000H   CODE     ---       System_EnterSleep
 *DEL*:00000000H   CODE     ---       System_EnterStandby
 *DEL*:00000000H   CODE     ---       System_SoftReset
+LX51 LINKER/LOCATER V4.66.97.0                                                        09/09/2026  08:38:15  PAGE 8
+
+
 *SFR* 000000F4H   DATA     BYTE      T3CON
 *SFR* 000000F5H   DATA     BYTE      T3RH
 *SFR* 000000F6H   DATA     BYTE      T3RL
@@ -512,7 +503,7 @@ PUBLIC SYMBOLS OF MODULE:  .\Objects\WY8S8002XX (?C_STARTUP)
 *SFR* 000000E9H   DATA     BYTE      Trim4
 *SFR* 000000E2H   DATA     BYTE      WAITSTS
 *DEL*:00000000H   CODE     ---       WDT_ClearTF
-      01000762H   CODE     ---       WDT_ClearWDT
+*DEL*:00000000H   CODE     ---       WDT_ClearWDT
 *SFR* 0000009BH   DATA     BYTE      WDTCON
 *SFR* 0000009CH   DATA     BYTE      WDTMOD
 
@@ -531,7 +522,7 @@ SYMBOL TABLE OF MODULE:  .\Objects\WY8S8002XX (?C_STARTUP)
       00000001H   SYMBOL    NUMBER   ---       IBPSTACK
       00000100H   SYMBOL    NUMBER   ---       IBPSTACKTOP
       00000100H   SYMBOL    NUMBER   ---       IDATALEN
-      010004C0H   SYMBOL    CODE     ---       IDATALOOP
+      010004B5H   SYMBOL    CODE     ---       IDATALOOP
       00000000H   SYMBOL    NUMBER   ---       PBPSTACK
       00000100H   SYMBOL    NUMBER   ---       PBPSTACKTOP
       00000000H   SYMBOL    NUMBER   ---       PDATALEN
@@ -540,35 +531,35 @@ SYMBOL TABLE OF MODULE:  .\Objects\WY8S8002XX (?C_STARTUP)
       00000000H   SYMBOL    NUMBER   ---       PPAGEENABLE
       000000A0H   SYMBOL    DATA     ---       PPAGE_SFR
       00000081H   SYMBOL    DATA     ---       SP
-      010004BDH   SYMBOL    CODE     ---       STARTUP1
+      010004B2H   SYMBOL    CODE     ---       STARTUP1
       00000000H   SYMBOL    NUMBER   ---       XBPSTACK
       00000000H   SYMBOL    NUMBER   ---       XBPSTACKTOP
-LX51 LINKER/LOCATER V4.66.97.0                                                        09/08/2026  08:43:14  PAGE 9
-
-
       00000200H   SYMBOL    NUMBER   ---       XDATALEN
-      010004CBH   SYMBOL    CODE     ---       XDATALOOP
+      010004C0H   SYMBOL    CODE     ---       XDATALOOP
       00000000H   SYMBOL    NUMBER   ---       XDATASTART
       01000000H   LINE      CODE     ---       #126
-      010004BDH   LINE      CODE     ---       #133
-      010004BFH   LINE      CODE     ---       #134
-      010004C0H   LINE      CODE     ---       #135
-      010004C1H   LINE      CODE     ---       #136
-      010004C3H   LINE      CODE     ---       #140
-      010004C6H   LINE      CODE     ---       #141
-      010004C8H   LINE      CODE     ---       #145
-      010004CAH   LINE      CODE     ---       #147
-      010004CBH   LINE      CODE     ---       #148
-      010004CCH   LINE      CODE     ---       #149
-      010004CDH   LINE      CODE     ---       #150
-      010004CFH   LINE      CODE     ---       #151
-      010004D1H   LINE      CODE     ---       #170
-      010004D4H   LINE      CODE     ---       #185
-      010004D7H   LINE      CODE     ---       #196
+      010004B2H   LINE      CODE     ---       #133
+      010004B4H   LINE      CODE     ---       #134
+      010004B5H   LINE      CODE     ---       #135
+      010004B6H   LINE      CODE     ---       #136
+      010004B8H   LINE      CODE     ---       #140
+LX51 LINKER/LOCATER V4.66.97.0                                                        09/09/2026  08:38:15  PAGE 9
+
+
+      010004BBH   LINE      CODE     ---       #141
+      010004BDH   LINE      CODE     ---       #145
+      010004BFH   LINE      CODE     ---       #147
+      010004C0H   LINE      CODE     ---       #148
+      010004C1H   LINE      CODE     ---       #149
+      010004C2H   LINE      CODE     ---       #150
+      010004C4H   LINE      CODE     ---       #151
+      010004C6H   LINE      CODE     ---       #170
+      010004C9H   LINE      CODE     ---       #185
+      010004CCH   LINE      CODE     ---       #196
 
       ---         MODULE    ---      ---       GPIO
       00000012H   PUBLIC    DATA     BYTE      ?_GPIO0_ConfigOutput?BYTE
-      010005E7H   PUBLIC    CODE     ---       _GPIO0_ConfigOutput
+      010005DCH   PUBLIC    CODE     ---       _GPIO0_ConfigOutput
       00000080H   SFRSYM    DATA     BYTE      P0
       00000090H   SFRSYM    DATA     BYTE      P1
       000000A0H   SFRSYM    DATA     BYTE      P2
@@ -611,9 +602,6 @@ SYMBOL TABLE OF MODULE:  .\Objects\WY8S8002XX (?C_STARTUP)
       000000C8H   SFRSYM    DATA     BYTE      PIO1IF
       000000F8H.0 SFRSYM    DATA     BIT       RI_1
       000000E3H   SFRSYM    DATA     BYTE      FTPTEST
-LX51 LINKER/LOCATER V4.66.97.0                                                        09/08/2026  08:43:14  PAGE 10
-
-
       000000F8H.1 SFRSYM    DATA     BIT       TI_1
       000000E6H   SFRSYM    DATA     BYTE      HRCCFG
       000000B6H   SFRSYM    DATA     BYTE      ADCMPH
@@ -623,6 +611,9 @@ SYMBOL TABLE OF MODULE:  .\Objects\WY8S8002XX (?C_STARTUP)
       00000099H   SFRSYM    DATA     BYTE      SBUF
       00000087H   SFRSYM    DATA     BYTE      PCON
       000000A0H.0 SFRSYM    DATA     BIT       P20
+LX51 LINKER/LOCATER V4.66.97.0                                                        09/09/2026  08:38:15  PAGE 10
+
+
       00000090H.1 SFRSYM    DATA     BIT       P11
       00000080H.2 SFRSYM    DATA     BIT       P02
       000000E2H   SFRSYM    DATA     BYTE      WAITSTS
@@ -679,9 +670,6 @@ SYMBOL TABLE OF MODULE:  .\Objects\WY8S8002XX (?C_STARTUP)
       000000DEH   SFRSYM    DATA     BYTE      PWMP2H
       000000B7H   SFRSYM    DATA     BYTE      EI2
       000000F0H   SFRSYM    DATA     BYTE      B
-LX51 LINKER/LOCATER V4.66.97.0                                                        09/08/2026  08:43:14  PAGE 11
-
-
       000000CAH   SFRSYM    DATA     BYTE      PWMP3H
       000000A2H   SFRSYM    DATA     BYTE      AUXR
       000000F9H   SFRSYM    DATA     BYTE      SBUF_1
@@ -691,6 +679,9 @@ SYMBOL TABLE OF MODULE:  .\Objects\WY8S8002XX (?C_STARTUP)
       000000DDH   SFRSYM    DATA     BYTE      PWMP1L
       000000ACH   SFRSYM    DATA     BYTE      PIO1EICFGH
       000000D8H.4 SFRSYM    DATA     BIT       PWMFBF
+LX51 LINKER/LOCATER V4.66.97.0                                                        09/09/2026  08:38:15  PAGE 11
+
+
       000000DFH   SFRSYM    DATA     BYTE      PWMP2L
       000000F8H   SFRSYM    DATA     BYTE      SCON_1
       000000C7H   SFRSYM    DATA     BYTE      PWMP3L
@@ -747,9 +738,6 @@ SYMBOL TABLE OF MODULE:  .\Objects\WY8S8002XX (?C_STARTUP)
       000000C8H.0 SFRSYM    DATA     BIT       PIO1IF0
       000000C0H.1 SFRSYM    DATA     BIT       PIO0IF1
       000000AEH   SFRSYM    DATA     BYTE      ADCCON0
-LX51 LINKER/LOCATER V4.66.97.0                                                        09/08/2026  08:43:14  PAGE 12
-
-
       000000A7H   SFRSYM    DATA     BYTE      PWMDTFBC
       000000C8H.1 SFRSYM    DATA     BIT       PIO1IF1
       000000C0H.2 SFRSYM    DATA     BIT       PIO0IF2
@@ -759,6 +747,9 @@ SYMBOL TABLE OF MODULE:  .\Objects\WY8S8002XX (?C_STARTUP)
       000000B0H.7 SFRSYM    DATA     BIT       ADCEN
       000000B2H   SFRSYM    DATA     BYTE      ADCCON2
       00000083H   SFRSYM    DATA     BYTE      DPH
+LX51 LINKER/LOCATER V4.66.97.0                                                        09/09/2026  08:38:15  PAGE 12
+
+
       000000F8H.2 SFRSYM    DATA     BIT       RB8_1
       000000C8H.3 SFRSYM    DATA     BIT       PIO1IF3
       000000C0H.4 SFRSYM    DATA     BIT       PIO0IF4
@@ -802,31 +793,31 @@ SYMBOL TABLE OF MODULE:  .\Objects\WY8S8002XX (?C_STARTUP)
       0000009FH   SFRSYM    DATA     BYTE      SYSRST
       000000F7H   SFRSYM    DATA     BYTE      TESTMODEEN
 
-      010005E7H   BLOCK     CODE     ---       LVL=0
+      010005DCH   BLOCK     CODE     ---       LVL=0
       00000004H   SYMBOL    DATA     BYTE      u8PinNum
       00000005H   SYMBOL    DATA     BYTE      u8opMode
       00000002H   SYMBOL    DATA     WORD      u16udMode
       00000016H   SYMBOL    DATA     BYTE      u8crtMode
-      010005E7H   LINE      CODE     ---       #27
-      010005E9H   LINE      CODE     ---       #28
-      010005E9H   LINE      CODE     ---       #29
-      010005F4H   LINE      CODE     ---       #30
-      010005F7H   LINE      CODE     ---       #31
-      010005F7H   LINE      CODE     ---       #32
-      01000613H   LINE      CODE     ---       #33
-      01000631H   LINE      CODE     ---       #34
-LX51 LINKER/LOCATER V4.66.97.0                                                        09/08/2026  08:43:14  PAGE 13
-
-
-      01000651H   LINE      CODE     ---       #35
-      01000663H   LINE      CODE     ---       #36
-      01000666H   LINE      CODE     ---       #37
+      010005DCH   LINE      CODE     ---       #27
+      010005DEH   LINE      CODE     ---       #28
+      010005DEH   LINE      CODE     ---       #29
+      010005E9H   LINE      CODE     ---       #30
+      010005ECH   LINE      CODE     ---       #31
+      010005ECH   LINE      CODE     ---       #32
+      01000608H   LINE      CODE     ---       #33
+      01000626H   LINE      CODE     ---       #34
+      01000646H   LINE      CODE     ---       #35
+      01000658H   LINE      CODE     ---       #36
+      0100065BH   LINE      CODE     ---       #37
       ---         BLOCKEND  ---      ---       LVL=0
       00000004H   SYMBOL    DATA     BYTE      u8PinNum
       00000005H   SYMBOL    DATA     BYTE      u8opMode
       00000002H   SYMBOL    DATA     WORD      u16udMode
       00000004H   SYMBOL    DATA     BYTE      u8PinNum
       00000005H   SYMBOL    DATA     BYTE      u8opMode
+LX51 LINKER/LOCATER V4.66.97.0                                                        09/09/2026  08:38:15  PAGE 13
+
+
       00000002H   SYMBOL    DATA     WORD      u16udMode
       00000007H   SYMBOL    DATA     BYTE      u8PinNum
       00000006H   SYMBOL    DATA     BYTE      u8opMode
@@ -851,10 +842,10 @@ SYMBOL TABLE OF MODULE:  .\Objects\WY8S8002XX (?C_STARTUP)
       00000001H   SYMBOL    DATA     BYTE      pin
 
       ---         MODULE    ---      ---       ADC
-      01000667H   PUBLIC    CODE     ---       ADC_GetResultQueryMode
-      01000710H   PUBLIC    CODE     ---       ADC_StartSWCVT
-      0100076EH   PUBLIC    CODE     ---       ADC_ConfigSWCVT
-      01000402H   PUBLIC    CODE     ---       _ADC_ConfigChannel
+      0100065CH   PUBLIC    CODE     ---       ADC_GetResultQueryMode
+      010006E1H   PUBLIC    CODE     ---       ADC_StartSWCVT
+      01000723H   PUBLIC    CODE     ---       ADC_ConfigSWCVT
+      010003F7H   PUBLIC    CODE     ---       _ADC_ConfigChannel
       00000080H   SFRSYM    DATA     BYTE      P0
       00000090H   SFRSYM    DATA     BYTE      P1
       000000A0H   SFRSYM    DATA     BYTE      P2
@@ -883,9 +874,6 @@ SYMBOL TABLE OF MODULE:  .\Objects\WY8S8002XX (?C_STARTUP)
       00000098H.1 SFRSYM    DATA     BIT       TI
       000000B0H.2 SFRSYM    DATA     BIT       ADFBEN
       000000F5H   SFRSYM    DATA     BYTE      T3RH
-LX51 LINKER/LOCATER V4.66.97.0                                                        09/08/2026  08:43:14  PAGE 14
-
-
       000000B8H.4 SFRSYM    DATA     BIT       PS
       00000081H   SFRSYM    DATA     BYTE      SP
       000000D0H.2 SFRSYM    DATA     BIT       OV
@@ -895,6 +883,9 @@ SYMBOL TABLE OF MODULE:  .\Objects\WY8S8002XX (?C_STARTUP)
       00000094H   SFRSYM    DATA     BYTE      P1UP
       000000D8H   SFRSYM    DATA     BYTE      PWMINTF
       000000A4H   SFRSYM    DATA     BYTE      P2UP
+LX51 LINKER/LOCATER V4.66.97.0                                                        09/09/2026  08:38:15  PAGE 14
+
+
       000000C3H   SFRSYM    DATA     BYTE      PWMCNTM
       000000C0H   SFRSYM    DATA     BYTE      PIO0IF
       000000C8H   SFRSYM    DATA     BYTE      PIO1IF
@@ -951,9 +942,6 @@ SYMBOL TABLE OF MODULE:  .\Objects\WY8S8002XX (?C_STARTUP)
       000000CCH   SFRSYM    DATA     BYTE      PWMD2L
       000000DAH   SFRSYM    DATA     BYTE      PWMD3L
       000000E1H   SFRSYM    DATA     BYTE      ADCSMP
-LX51 LINKER/LOCATER V4.66.97.0                                                        09/08/2026  08:43:14  PAGE 15
-
-
       000000CBH   SFRSYM    DATA     BYTE      PWMINTY
       000000F2H   SFRSYM    DATA     BYTE      IAPCON
       000000B3H   SFRSYM    DATA     BYTE      ADDLYL
@@ -963,6 +951,9 @@ SYMBOL TABLE OF MODULE:  .\Objects\WY8S8002XX (?C_STARTUP)
       000000C2H   SFRSYM    DATA     BYTE      PWMPSC01
       000000BBH   SFRSYM    DATA     BYTE      SPICFG
       00000088H.3 SFRSYM    DATA     BIT       IE1
+LX51 LINKER/LOCATER V4.66.97.0                                                        09/09/2026  08:38:15  PAGE 15
+
+
       000000DCH   SFRSYM    DATA     BYTE      PWMP1H
       000000A9H   SFRSYM    DATA     BYTE      EI1
       000000DEH   SFRSYM    DATA     BYTE      PWMP2H
@@ -1019,9 +1010,6 @@ SYMBOL TABLE OF MODULE:  .\Objects\WY8S8002XX (?C_STARTUP)
       000000B8H.3 SFRSYM    DATA     BIT       PT0
       000000B8H.6 SFRSYM    DATA     BIT       PS1
       000000D0H.3 SFRSYM    DATA     BIT       RS0
-LX51 LINKER/LOCATER V4.66.97.0                                                        09/08/2026  08:43:14  PAGE 16
-
-
       000000B8H.5 SFRSYM    DATA     BIT       PT1
       000000D0H.4 SFRSYM    DATA     BIT       RS1
       00000088H.4 SFRSYM    DATA     BIT       TR0
@@ -1031,6 +1019,9 @@ SYMBOL TABLE OF MODULE:  .\Objects\WY8S8002XX (?C_STARTUP)
       000000B8H.0 SFRSYM    DATA     BIT       PX0
       000000B0H.6 SFRSYM    DATA     BIT       ADCIF
       000000BFH   SFRSYM    DATA     BYTE      SPITDR
+LX51 LINKER/LOCATER V4.66.97.0                                                        09/09/2026  08:38:15  PAGE 16
+
+
       000000C0H.0 SFRSYM    DATA     BIT       PIO0IF0
       000000B8H.2 SFRSYM    DATA     BIT       PX1
       000000C8H.0 SFRSYM    DATA     BIT       PIO1IF0
@@ -1087,57 +1078,57 @@ SYMBOL TABLE OF MODULE:  .\Objects\WY8S8002XX (?C_STARTUP)
       000000D0H   SFRSYM    DATA     BYTE      PSW
       0000009FH   SFRSYM    DATA     BYTE      SYSRST
       000000F7H   SFRSYM    DATA     BYTE      TESTMODEEN
-LX51 LINKER/LOCATER V4.66.97.0                                                        09/08/2026  08:43:14  PAGE 17
 
-
-
-      01000402H   BLOCK     CODE     ---       LVL=0
+      010003F7H   BLOCK     CODE     ---       LVL=0
       00000007H   SYMBOL    DATA     BYTE      u8channel
       00000005H   SYMBOL    DATA     BYTE      u8div
-      01000402H   LINE      CODE     ---       #29
-      01000402H   LINE      CODE     ---       #30
-      01000402H   LINE      CODE     ---       #31
-      0100042DH   LINE      CODE     ---       #32
-      0100042DH   LINE      CODE     ---       #33
-      0100042DH   LINE      CODE     ---       #34
-      01000433H   LINE      CODE     ---       #35
-      01000436H   LINE      CODE     ---       #36
-      01000438H   LINE      CODE     ---       #37
-      01000438H   LINE      CODE     ---       #38
-      0100043EH   LINE      CODE     ---       #39
-      01000446H   LINE      CODE     ---       #40
-      01000448H   LINE      CODE     ---       #41
-      01000448H   LINE      CODE     ---       #42
-      0100044EH   LINE      CODE     ---       #43
-      01000456H   LINE      CODE     ---       #44
-      01000458H   LINE      CODE     ---       #45
-      01000458H   LINE      CODE     ---       #46
-      0100045EH   LINE      CODE     ---       #47
-      01000466H   LINE      CODE     ---       #48
-      01000468H   LINE      CODE     ---       #49
-      01000468H   LINE      CODE     ---       #50
-      0100046EH   LINE      CODE     ---       #51
-      01000476H   LINE      CODE     ---       #52
-      01000478H   LINE      CODE     ---       #53
-      01000478H   LINE      CODE     ---       #54
-      0100047EH   LINE      CODE     ---       #55
-      01000486H   LINE      CODE     ---       #56
-      01000488H   LINE      CODE     ---       #57
-      01000488H   LINE      CODE     ---       #58
-      0100048EH   LINE      CODE     ---       #59
-      01000496H   LINE      CODE     ---       #60
-      01000498H   LINE      CODE     ---       #61
-      01000498H   LINE      CODE     ---       #62
-      0100049EH   LINE      CODE     ---       #63
-      010004A6H   LINE      CODE     ---       #64
-      010004A8H   LINE      CODE     ---       #65
-      010004A8H   LINE      CODE     ---       #66
-      010004B0H   LINE      CODE     ---       #67
-      010004B0H   LINE      CODE     ---       #68
-      010004B0H   LINE      CODE     ---       #69
-      010004B0H   LINE      CODE     ---       #70
-      010004B0H   LINE      CODE     ---       #71
-      010004BCH   LINE      CODE     ---       #72
+      010003F7H   LINE      CODE     ---       #29
+      010003F7H   LINE      CODE     ---       #30
+      010003F7H   LINE      CODE     ---       #31
+      01000422H   LINE      CODE     ---       #32
+      01000422H   LINE      CODE     ---       #33
+LX51 LINKER/LOCATER V4.66.97.0                                                        09/09/2026  08:38:15  PAGE 17
+
+
+      01000422H   LINE      CODE     ---       #34
+      01000428H   LINE      CODE     ---       #35
+      0100042BH   LINE      CODE     ---       #36
+      0100042DH   LINE      CODE     ---       #37
+      0100042DH   LINE      CODE     ---       #38
+      01000433H   LINE      CODE     ---       #39
+      0100043BH   LINE      CODE     ---       #40
+      0100043DH   LINE      CODE     ---       #41
+      0100043DH   LINE      CODE     ---       #42
+      01000443H   LINE      CODE     ---       #43
+      0100044BH   LINE      CODE     ---       #44
+      0100044DH   LINE      CODE     ---       #45
+      0100044DH   LINE      CODE     ---       #46
+      01000453H   LINE      CODE     ---       #47
+      0100045BH   LINE      CODE     ---       #48
+      0100045DH   LINE      CODE     ---       #49
+      0100045DH   LINE      CODE     ---       #50
+      01000463H   LINE      CODE     ---       #51
+      0100046BH   LINE      CODE     ---       #52
+      0100046DH   LINE      CODE     ---       #53
+      0100046DH   LINE      CODE     ---       #54
+      01000473H   LINE      CODE     ---       #55
+      0100047BH   LINE      CODE     ---       #56
+      0100047DH   LINE      CODE     ---       #57
+      0100047DH   LINE      CODE     ---       #58
+      01000483H   LINE      CODE     ---       #59
+      0100048BH   LINE      CODE     ---       #60
+      0100048DH   LINE      CODE     ---       #61
+      0100048DH   LINE      CODE     ---       #62
+      01000493H   LINE      CODE     ---       #63
+      0100049BH   LINE      CODE     ---       #64
+      0100049DH   LINE      CODE     ---       #65
+      0100049DH   LINE      CODE     ---       #66
+      010004A5H   LINE      CODE     ---       #67
+      010004A5H   LINE      CODE     ---       #68
+      010004A5H   LINE      CODE     ---       #69
+      010004A5H   LINE      CODE     ---       #70
+      010004A5H   LINE      CODE     ---       #71
+      010004B1H   LINE      CODE     ---       #72
       ---         BLOCKEND  ---      ---       LVL=0
       00000007H   SYMBOL    DATA     BYTE      u8FBStatus
       00000005H   SYMBOL    DATA     BYTE      u8cmpSel
@@ -1145,31 +1136,31 @@ SYMBOL TABLE OF MODULE:  .\Objects\WY8S8002XX (?C_STARTUP)
       00000005H   SYMBOL    DATA     BYTE      u8trigger
       00000002H   SYMBOL    DATA     WORD      u16delay
 
-      0100076EH   BLOCK     CODE     ---       LVL=0
-      0100076EH   LINE      CODE     ---       #111
-      0100076EH   LINE      CODE     ---       #112
-      0100076EH   LINE      CODE     ---       #113
-      01000771H   LINE      CODE     ---       #114
+      01000723H   BLOCK     CODE     ---       LVL=0
+      01000723H   LINE      CODE     ---       #111
+      01000723H   LINE      CODE     ---       #112
+      01000723H   LINE      CODE     ---       #113
+      01000726H   LINE      CODE     ---       #114
       ---         BLOCKEND  ---      ---       LVL=0
 
-      01000710H   BLOCK     CODE     ---       LVL=0
-      01000710H   LINE      CODE     ---       #119
-      01000710H   LINE      CODE     ---       #120
-LX51 LINKER/LOCATER V4.66.97.0                                                        09/08/2026  08:43:14  PAGE 18
-
-
-      01000710H   LINE      CODE     ---       #121
-      01000724H   LINE      CODE     ---       #123
-      01000727H   LINE      CODE     ---       #124
+      010006E1H   BLOCK     CODE     ---       LVL=0
+      010006E1H   LINE      CODE     ---       #119
+      010006E1H   LINE      CODE     ---       #120
+      010006E1H   LINE      CODE     ---       #121
+      010006F5H   LINE      CODE     ---       #123
+      010006F8H   LINE      CODE     ---       #124
       ---         BLOCKEND  ---      ---       LVL=0
 
-      01000667H   BLOCK     CODE     ---       LVL=0
-      01000667H   LINE      CODE     ---       #129
-      01000667H   LINE      CODE     ---       #130
-      01000667H   LINE      CODE     ---       #131
-      01000679H   LINE      CODE     ---       #133
-      0100067CH   LINE      CODE     ---       #134
-      0100068EH   LINE      CODE     ---       #135
+      0100065CH   BLOCK     CODE     ---       LVL=0
+      0100065CH   LINE      CODE     ---       #129
+      0100065CH   LINE      CODE     ---       #130
+      0100065CH   LINE      CODE     ---       #131
+LX51 LINKER/LOCATER V4.66.97.0                                                        09/09/2026  08:38:15  PAGE 18
+
+
+      0100066EH   LINE      CODE     ---       #133
+      01000671H   LINE      CODE     ---       #134
+      01000683H   LINE      CODE     ---       #135
       ---         BLOCKEND  ---      ---       LVL=0
 
       ---         MODULE    ---      ---       IR
@@ -1223,9 +1214,6 @@ SYMBOL TABLE OF MODULE:  .\Objects\WY8S8002XX (?C_STARTUP)
       00000080H.1 SFRSYM    DATA     BIT       P01
       00000099H   SFRSYM    DATA     BYTE      SBUF
       00000087H   SFRSYM    DATA     BYTE      PCON
-LX51 LINKER/LOCATER V4.66.97.0                                                        09/08/2026  08:43:14  PAGE 19
-
-
       000000A0H.0 SFRSYM    DATA     BIT       P20
       00000090H.1 SFRSYM    DATA     BIT       P11
       00000080H.2 SFRSYM    DATA     BIT       P02
@@ -1235,6 +1223,9 @@ SYMBOL TABLE OF MODULE:  .\Objects\WY8S8002XX (?C_STARTUP)
       000000A0H.1 SFRSYM    DATA     BIT       P21
       00000090H.2 SFRSYM    DATA     BIT       P12
       00000080H.3 SFRSYM    DATA     BIT       P03
+LX51 LINKER/LOCATER V4.66.97.0                                                        09/09/2026  08:38:15  PAGE 19
+
+
       000000D7H   SFRSYM    DATA     BYTE      PWMD1H
       000000CFH   SFRSYM    DATA     BYTE      PWMOUTD
       000000AFH   SFRSYM    DATA     BYTE      ADCMPL
@@ -1291,9 +1282,6 @@ SYMBOL TABLE OF MODULE:  .\Objects\WY8S8002XX (?C_STARTUP)
       000000AAH   SFRSYM    DATA     BYTE      PIO0EICFGH
       000000DDH   SFRSYM    DATA     BYTE      PWMP1L
       000000ACH   SFRSYM    DATA     BYTE      PIO1EICFGH
-LX51 LINKER/LOCATER V4.66.97.0                                                        09/08/2026  08:43:14  PAGE 20
-
-
       000000D8H.4 SFRSYM    DATA     BIT       PWMFBF
       000000DFH   SFRSYM    DATA     BYTE      PWMP2L
       000000F8H   SFRSYM    DATA     BYTE      SCON_1
@@ -1303,6 +1291,9 @@ SYMBOL TABLE OF MODULE:  .\Objects\WY8S8002XX (?C_STARTUP)
       000000E0H   SFRSYM    DATA     BYTE      ACC
       000000ADH   SFRSYM    DATA     BYTE      PIO1EICFGL
       000000A8H.0 SFRSYM    DATA     BIT       ET0
+LX51 LINKER/LOCATER V4.66.97.0                                                        09/09/2026  08:38:15  PAGE 20
+
+
       000000A8H.1 SFRSYM    DATA     BIT       ET1
       00000088H.5 SFRSYM    DATA     BIT       TF0
       000000E5H   SFRSYM    DATA     WORD      HRCFTUNE16
@@ -1359,9 +1350,6 @@ SYMBOL TABLE OF MODULE:  .\Objects\WY8S8002XX (?C_STARTUP)
       000000C0H.3 SFRSYM    DATA     BIT       PIO0IF3
       000000B0H.7 SFRSYM    DATA     BIT       ADCEN
       000000B2H   SFRSYM    DATA     BYTE      ADCCON2
-LX51 LINKER/LOCATER V4.66.97.0                                                        09/08/2026  08:43:14  PAGE 21
-
-
       00000083H   SFRSYM    DATA     BYTE      DPH
       000000F8H.2 SFRSYM    DATA     BIT       RB8_1
       000000C8H.3 SFRSYM    DATA     BIT       PIO1IF3
@@ -1371,6 +1359,9 @@ SYMBOL TABLE OF MODULE:  .\Objects\WY8S8002XX (?C_STARTUP)
       000000F8H.3 SFRSYM    DATA     BIT       TB8_1
       000000C8H.5 SFRSYM    DATA     BIT       PIO1IF5
       000000C0H.6 SFRSYM    DATA     BIT       PIO0IF6
+LX51 LINKER/LOCATER V4.66.97.0                                                        09/09/2026  08:38:15  PAGE 21
+
+
       000000B0H.5 SFRSYM    DATA     BIT       ADCSC
       000000C8H.6 SFRSYM    DATA     BIT       PIO1IF6
       000000C0H.7 SFRSYM    DATA     BIT       PIO0IF7
@@ -1427,9 +1418,6 @@ SYMBOL TABLE OF MODULE:  .\Objects\WY8S8002XX (?C_STARTUP)
       000000EBH   SFRSYM    DATA     BYTE      IAPFD1
       000000B0H   SFRSYM    DATA     BYTE      PWMLOAD
       000000ECH   SFRSYM    DATA     BYTE      IAPFD2
-LX51 LINKER/LOCATER V4.66.97.0                                                        09/08/2026  08:43:14  PAGE 22
-
-
       00000093H   SFRSYM    DATA     BYTE      P1RD
       000000EDH   SFRSYM    DATA     BYTE      IAPFD3
       000000B8H   SFRSYM    DATA     BYTE      IP
@@ -1439,6 +1427,9 @@ SYMBOL TABLE OF MODULE:  .\Objects\WY8S8002XX (?C_STARTUP)
       000000D0H.7 SFRSYM    DATA     BIT       CY
       00000098H.1 SFRSYM    DATA     BIT       TI
       000000B0H.2 SFRSYM    DATA     BIT       ADFBEN
+LX51 LINKER/LOCATER V4.66.97.0                                                        09/09/2026  08:38:15  PAGE 22
+
+
       000000F5H   SFRSYM    DATA     BYTE      T3RH
       000000B8H.4 SFRSYM    DATA     BIT       PS
       00000081H   SFRSYM    DATA     BYTE      SP
@@ -1495,9 +1486,6 @@ SYMBOL TABLE OF MODULE:  .\Objects\WY8S8002XX (?C_STARTUP)
       00000080H.6 SFRSYM    DATA     BIT       P06
       000000D4H   SFRSYM    DATA     BYTE      PWMD0L
       000000D8H.2 SFRSYM    DATA     BIT       PWMIF2
-LX51 LINKER/LOCATER V4.66.97.0                                                        09/08/2026  08:43:14  PAGE 23
-
-
       000000A0H.5 SFRSYM    DATA     BIT       P25
       00000090H.6 SFRSYM    DATA     BIT       P16
       00000080H.7 SFRSYM    DATA     BIT       P07
@@ -1507,6 +1495,9 @@ SYMBOL TABLE OF MODULE:  .\Objects\WY8S8002XX (?C_STARTUP)
       00000090H.7 SFRSYM    DATA     BIT       P17
       000000CCH   SFRSYM    DATA     BYTE      PWMD2L
       000000DAH   SFRSYM    DATA     BYTE      PWMD3L
+LX51 LINKER/LOCATER V4.66.97.0                                                        09/09/2026  08:38:15  PAGE 23
+
+
       000000E1H   SFRSYM    DATA     BYTE      ADCSMP
       000000CBH   SFRSYM    DATA     BYTE      PWMINTY
       000000F2H   SFRSYM    DATA     BYTE      IAPCON
@@ -1563,9 +1554,6 @@ SYMBOL TABLE OF MODULE:  .\Objects\WY8S8002XX (?C_STARTUP)
       000000E7H   SFRSYM    DATA     BYTE      Trim2
       0000008AH   SFRSYM    DATA     BYTE      TL0
       00000098H.6 SFRSYM    DATA     BIT       SM1
-LX51 LINKER/LOCATER V4.66.97.0                                                        09/08/2026  08:43:14  PAGE 24
-
-
       000000E8H   SFRSYM    DATA     BYTE      Trim3
       0000009CH   SFRSYM    DATA     BYTE      WDTMOD
       0000009BH   SFRSYM    DATA     BYTE      WDTCON
@@ -1575,6 +1563,9 @@ SYMBOL TABLE OF MODULE:  .\Objects\WY8S8002XX (?C_STARTUP)
       000000E9H   SFRSYM    DATA     BYTE      Trim4
       000000B8H.3 SFRSYM    DATA     BIT       PT0
       000000B8H.6 SFRSYM    DATA     BIT       PS1
+LX51 LINKER/LOCATER V4.66.97.0                                                        09/09/2026  08:38:15  PAGE 24
+
+
       000000D0H.3 SFRSYM    DATA     BIT       RS0
       000000B8H.5 SFRSYM    DATA     BIT       PT1
       000000D0H.4 SFRSYM    DATA     BIT       RS1
@@ -1631,9 +1622,6 @@ SYMBOL TABLE OF MODULE:  .\Objects\WY8S8002XX (?C_STARTUP)
       000000F4H   SFRSYM    DATA     BYTE      T3CON
       000000EEH   SFRSYM    DATA     BYTE      IAPAL
       000000F1H   SFRSYM    DATA     BYTE      OCDEN
-LX51 LINKER/LOCATER V4.66.97.0                                                        09/08/2026  08:43:14  PAGE 25
-
-
       000000F3H   SFRSYM    DATA     BYTE      SWTRDATA
       000000D1H   SFRSYM    DATA     BYTE      PWM01DT
       00000086H   SFRSYM    DATA     BYTE      OPA0CON
@@ -1643,6 +1631,9 @@ SYMBOL TABLE OF MODULE:  .\Objects\WY8S8002XX (?C_STARTUP)
       000000D0H.1 SFRSYM    DATA     BIT       F1
       000000D0H   SFRSYM    DATA     BYTE      PSW
       0000009FH   SFRSYM    DATA     BYTE      SYSRST
+LX51 LINKER/LOCATER V4.66.97.0                                                        09/09/2026  08:38:15  PAGE 25
+
+
       000000F7H   SFRSYM    DATA     BYTE      TESTMODEEN
       00000007H   SYMBOL    DATA     BYTE      u8mode
       00000005H   SYMBOL    DATA     BYTE      u8gate
@@ -1660,9 +1651,6 @@ SYMBOL TABLE OF MODULE:  .\Objects\WY8S8002XX (?C_STARTUP)
       00000005H   SYMBOL    DATA     BYTE      u8filter
 
       ---         MODULE    ---      ---       WDT
-      01000762H   PUBLIC    CODE     ---       WDT_ClearWDT
-      01000752H   PUBLIC    CODE     ---       _WDT_Run
-      0100068FH   PUBLIC    CODE     ---       _WDT_ConfigMode
       00000080H   SFRSYM    DATA     BYTE      P0
       00000090H   SFRSYM    DATA     BYTE      P1
       000000A0H   SFRSYM    DATA     BYTE      P2
@@ -1699,9 +1687,6 @@ SYMBOL TABLE OF MODULE:  .\Objects\WY8S8002XX (?C_STARTUP)
       000000F6H   SFRSYM    DATA     BYTE      T3RL
       00000094H   SFRSYM    DATA     BYTE      P1UP
       000000D8H   SFRSYM    DATA     BYTE      PWMINTF
-LX51 LINKER/LOCATER V4.66.97.0                                                        09/08/2026  08:43:14  PAGE 26
-
-
       000000A4H   SFRSYM    DATA     BYTE      P2UP
       000000C3H   SFRSYM    DATA     BYTE      PWMCNTM
       000000C0H   SFRSYM    DATA     BYTE      PIO0IF
@@ -1714,6 +1699,9 @@ SYMBOL TABLE OF MODULE:  .\Objects\WY8S8002XX (?C_STARTUP)
       00000080H.0 SFRSYM    DATA     BIT       P00
       00000090H.0 SFRSYM    DATA     BIT       P10
       00000080H.1 SFRSYM    DATA     BIT       P01
+LX51 LINKER/LOCATER V4.66.97.0                                                        09/09/2026  08:38:15  PAGE 26
+
+
       00000099H   SFRSYM    DATA     BYTE      SBUF
       00000087H   SFRSYM    DATA     BYTE      PCON
       000000A0H.0 SFRSYM    DATA     BIT       P20
@@ -1767,9 +1755,6 @@ SYMBOL TABLE OF MODULE:  .\Objects\WY8S8002XX (?C_STARTUP)
       000000C5H   SFRSYM    DATA     BYTE      PWMP0H
       000000C2H   SFRSYM    DATA     BYTE      PWMPSC01
       000000BBH   SFRSYM    DATA     BYTE      SPICFG
-LX51 LINKER/LOCATER V4.66.97.0                                                        09/08/2026  08:43:14  PAGE 27
-
-
       00000088H.3 SFRSYM    DATA     BIT       IE1
       000000DCH   SFRSYM    DATA     BYTE      PWMP1H
       000000A9H   SFRSYM    DATA     BYTE      EI1
@@ -1782,6 +1767,9 @@ SYMBOL TABLE OF MODULE:  .\Objects\WY8S8002XX (?C_STARTUP)
       000000D2H   SFRSYM    DATA     BYTE      PWMPSC23
       000000C6H   SFRSYM    DATA     BYTE      PWMP0L
       000000AAH   SFRSYM    DATA     BYTE      PIO0EICFGH
+LX51 LINKER/LOCATER V4.66.97.0                                                        09/09/2026  08:38:15  PAGE 27
+
+
       000000DDH   SFRSYM    DATA     BYTE      PWMP1L
       000000ACH   SFRSYM    DATA     BYTE      PIO1EICFGH
       000000D8H.4 SFRSYM    DATA     BIT       PWMFBF
@@ -1835,9 +1823,6 @@ SYMBOL TABLE OF MODULE:  .\Objects\WY8S8002XX (?C_STARTUP)
       00000088H.6 SFRSYM    DATA     BIT       TR1
       000000B8H.0 SFRSYM    DATA     BIT       PX0
       000000B0H.6 SFRSYM    DATA     BIT       ADCIF
-LX51 LINKER/LOCATER V4.66.97.0                                                        09/08/2026  08:43:14  PAGE 28
-
-
       000000BFH   SFRSYM    DATA     BYTE      SPITDR
       000000C0H.0 SFRSYM    DATA     BIT       PIO0IF0
       000000B8H.2 SFRSYM    DATA     BIT       PX1
@@ -1850,6 +1835,9 @@ SYMBOL TABLE OF MODULE:  .\Objects\WY8S8002XX (?C_STARTUP)
       000000B1H   SFRSYM    DATA     BYTE      ADCCON1
       000000C8H.2 SFRSYM    DATA     BIT       PIO1IF2
       000000C0H.3 SFRSYM    DATA     BIT       PIO0IF3
+LX51 LINKER/LOCATER V4.66.97.0                                                        09/09/2026  08:38:15  PAGE 28
+
+
       000000B0H.7 SFRSYM    DATA     BIT       ADCEN
       000000B2H   SFRSYM    DATA     BYTE      ADCCON2
       00000083H   SFRSYM    DATA     BYTE      DPH
@@ -1895,39 +1883,10 @@ SYMBOL TABLE OF MODULE:  .\Objects\WY8S8002XX (?C_STARTUP)
       000000D0H   SFRSYM    DATA     BYTE      PSW
       0000009FH   SFRSYM    DATA     BYTE      SYSRST
       000000F7H   SFRSYM    DATA     BYTE      TESTMODEEN
-
-      0100068FH   BLOCK     CODE     ---       LVL=0
       00000007H   SYMBOL    DATA     BYTE      u8div
       00000005H   SYMBOL    DATA     BYTE      u8overRstFlag
       00000003H   SYMBOL    DATA     BYTE      u8Mode
-      0100068FH   LINE      CODE     ---       #34
-      0100068FH   LINE      CODE     ---       #35
-      0100068FH   LINE      CODE     ---       #36
-LX51 LINKER/LOCATER V4.66.97.0                                                        09/08/2026  08:43:14  PAGE 29
-
-
-      01000696H   LINE      CODE     ---       #37
-      010006A5H   LINE      CODE     ---       #38
-      010006B2H   LINE      CODE     ---       #39
-      ---         BLOCKEND  ---      ---       LVL=0
-
-      01000752H   BLOCK     CODE     ---       LVL=0
       00000007H   SYMBOL    DATA     BYTE      u8WDTFlag
-      01000752H   LINE      CODE     ---       #47
-      01000752H   LINE      CODE     ---       #48
-      01000752H   LINE      CODE     ---       #49
-      01000761H   LINE      CODE     ---       #50
-      ---         BLOCKEND  ---      ---       LVL=0
-
-      01000762H   BLOCK     CODE     ---       LVL=0
-      01000762H   LINE      CODE     ---       #57
-      01000762H   LINE      CODE     ---       #58
-      01000762H   LINE      CODE     ---       #59
-      0100076AH   LINE      CODE     ---       #60
-      0100076AH   LINE      CODE     ---       #61
-      0100076DH   LINE      CODE     ---       #62
-      0100076DH   LINE      CODE     ---       #63
-      ---         BLOCKEND  ---      ---       LVL=0
 
       ---         MODULE    ---      ---       PWM
       00000080H   SFRSYM    DATA     BYTE      P0
@@ -1944,6 +1903,9 @@ SYMBOL TABLE OF MODULE:  .\Objects\WY8S8002XX (?C_STARTUP)
       000000EAH   SFRSYM    DATA     BYTE      IAPFD0
       000000A6H   SFRSYM    DATA     BYTE      P2OD
       000000FEH   SFRSYM    DATA     BYTE      P0DR
+LX51 LINKER/LOCATER V4.66.97.0                                                        09/09/2026  08:38:15  PAGE 29
+
+
       000000FCH   SFRSYM    DATA     BYTE      P0RD
       000000EBH   SFRSYM    DATA     BYTE      IAPFD1
       000000B0H   SFRSYM    DATA     BYTE      PWMLOAD
@@ -1971,9 +1933,6 @@ SYMBOL TABLE OF MODULE:  .\Objects\WY8S8002XX (?C_STARTUP)
       000000C0H   SFRSYM    DATA     BYTE      PIO0IF
       000000C8H   SFRSYM    DATA     BYTE      PIO1IF
       000000F8H.0 SFRSYM    DATA     BIT       RI_1
-LX51 LINKER/LOCATER V4.66.97.0                                                        09/08/2026  08:43:14  PAGE 30
-
-
       000000E3H   SFRSYM    DATA     BYTE      FTPTEST
       000000F8H.1 SFRSYM    DATA     BIT       TI_1
       000000E6H   SFRSYM    DATA     BYTE      HRCCFG
@@ -2012,6 +1971,9 @@ SYMBOL TABLE OF MODULE:  .\Objects\WY8S8002XX (?C_STARTUP)
       000000D8H.1 SFRSYM    DATA     BIT       PWMIF1
       000000B0H.0 SFRSYM    DATA     BIT       ADCMPO
       000000A0H.4 SFRSYM    DATA     BIT       P24
+LX51 LINKER/LOCATER V4.66.97.0                                                        09/09/2026  08:38:15  PAGE 30
+
+
       00000090H.5 SFRSYM    DATA     BIT       P15
       00000080H.6 SFRSYM    DATA     BIT       P06
       000000D4H   SFRSYM    DATA     BYTE      PWMD0L
@@ -2039,9 +2001,6 @@ SYMBOL TABLE OF MODULE:  .\Objects\WY8S8002XX (?C_STARTUP)
       000000A9H   SFRSYM    DATA     BYTE      EI1
       000000DEH   SFRSYM    DATA     BYTE      PWMP2H
       000000B7H   SFRSYM    DATA     BYTE      EI2
-LX51 LINKER/LOCATER V4.66.97.0                                                        09/08/2026  08:43:14  PAGE 31
-
-
       000000F0H   SFRSYM    DATA     BYTE      B
       000000CAH   SFRSYM    DATA     BYTE      PWMP3H
       000000A2H   SFRSYM    DATA     BYTE      AUXR
@@ -2080,6 +2039,9 @@ SYMBOL TABLE OF MODULE:  .\Objects\WY8S8002XX (?C_STARTUP)
       000000BCH   SFRSYM    DATA     BYTE      SPIMOD
       000000D0H.0 SFRSYM    DATA     BIT       P
       000000A8H.6 SFRSYM    DATA     BIT       ET6
+LX51 LINKER/LOCATER V4.66.97.0                                                        09/09/2026  08:38:15  PAGE 31
+
+
       00000098H.7 SFRSYM    DATA     BIT       SM0
       000000E7H   SFRSYM    DATA     BYTE      Trim2
       0000008AH   SFRSYM    DATA     BYTE      TL0
@@ -2107,9 +2069,6 @@ SYMBOL TABLE OF MODULE:  .\Objects\WY8S8002XX (?C_STARTUP)
       000000B8H.2 SFRSYM    DATA     BIT       PX1
       000000C8H.0 SFRSYM    DATA     BIT       PIO1IF0
       000000C0H.1 SFRSYM    DATA     BIT       PIO0IF1
-LX51 LINKER/LOCATER V4.66.97.0                                                        09/08/2026  08:43:14  PAGE 32
-
-
       000000AEH   SFRSYM    DATA     BYTE      ADCCON0
       000000A7H   SFRSYM    DATA     BYTE      PWMDTFBC
       000000C8H.1 SFRSYM    DATA     BIT       PIO1IF1
@@ -2148,6 +2107,9 @@ SYMBOL TABLE OF MODULE:  .\Objects\WY8S8002XX (?C_STARTUP)
       00000095H   SFRSYM    DATA     BYTE      P1DRL
       00000098H.4 SFRSYM    DATA     BIT       REN
       000000CEH   SFRSYM    DATA     BYTE      PWMSO1DATA
+LX51 LINKER/LOCATER V4.66.97.0                                                        09/09/2026  08:38:15  PAGE 32
+
+
       000000B5H   SFRSYM    DATA     BYTE      ADCRL
       000000F4H   SFRSYM    DATA     BYTE      T3CON
       000000EEH   SFRSYM    DATA     BYTE      IAPAL
@@ -2172,12 +2134,9 @@ SYMBOL TABLE OF MODULE:  .\Objects\WY8S8002XX (?C_STARTUP)
 
       ---         MODULE    ---      ---       COMMON
       00000025H   PUBLIC    DATA     DWORD     g_u32SystemClock
-      0100055AH   PUBLIC    CODE     ---       _System_ConfigCLK
+      0100054FH   PUBLIC    CODE     ---       _System_ConfigCLK
       00000080H   SFRSYM    DATA     BYTE      P0
       00000090H   SFRSYM    DATA     BYTE      P1
-LX51 LINKER/LOCATER V4.66.97.0                                                        09/08/2026  08:43:14  PAGE 33
-
-
       000000A0H   SFRSYM    DATA     BYTE      P2
       000000D0H.6 SFRSYM    DATA     BIT       AC
       000000A8H.7 SFRSYM    DATA     BIT       EA
@@ -2216,6 +2175,9 @@ SYMBOL TABLE OF MODULE:  .\Objects\WY8S8002XX (?C_STARTUP)
       000000C3H   SFRSYM    DATA     BYTE      PWMCNTM
       000000C0H   SFRSYM    DATA     BYTE      PIO0IF
       000000C8H   SFRSYM    DATA     BYTE      PIO1IF
+LX51 LINKER/LOCATER V4.66.97.0                                                        09/09/2026  08:38:15  PAGE 33
+
+
       000000F8H.0 SFRSYM    DATA     BIT       RI_1
       000000E3H   SFRSYM    DATA     BYTE      FTPTEST
       000000F8H.1 SFRSYM    DATA     BIT       TI_1
@@ -2243,9 +2205,6 @@ SYMBOL TABLE OF MODULE:  .\Objects\WY8S8002XX (?C_STARTUP)
       00000080H.4 SFRSYM    DATA     BIT       P04
       000000D9H   SFRSYM    DATA     BYTE      PWMD2H
       000000C4H   SFRSYM    DATA     BYTE      PWMSODW
-LX51 LINKER/LOCATER V4.66.97.0                                                        09/08/2026  08:43:14  PAGE 34
-
-
       00000098H   SFRSYM    DATA     BYTE      SCON
       000000D8H.0 SFRSYM    DATA     BIT       PWMIF0
       000000A0H.3 SFRSYM    DATA     BIT       P23
@@ -2284,6 +2243,9 @@ SYMBOL TABLE OF MODULE:  .\Objects\WY8S8002XX (?C_STARTUP)
       000000DCH   SFRSYM    DATA     BYTE      PWMP1H
       000000A9H   SFRSYM    DATA     BYTE      EI1
       000000DEH   SFRSYM    DATA     BYTE      PWMP2H
+LX51 LINKER/LOCATER V4.66.97.0                                                        09/09/2026  08:38:15  PAGE 34
+
+
       000000B7H   SFRSYM    DATA     BYTE      EI2
       000000F0H   SFRSYM    DATA     BYTE      B
       000000CAH   SFRSYM    DATA     BYTE      PWMP3H
@@ -2311,9 +2273,6 @@ SYMBOL TABLE OF MODULE:  .\Objects\WY8S8002XX (?C_STARTUP)
       00000088H.7 SFRSYM    DATA     BIT       TF1
       000000BAH   SFRSYM    DATA     BYTE      IP2
       000000A8H.3 SFRSYM    DATA     BIT       ET3
-LX51 LINKER/LOCATER V4.66.97.0                                                        09/08/2026  08:43:14  PAGE 35
-
-
       00000098H.2 SFRSYM    DATA     BIT       RB8
       0000008CH   SFRSYM    DATA     BYTE      TH0
       000000A8H.4 SFRSYM    DATA     BIT       ET4
@@ -2352,6 +2311,9 @@ SYMBOL TABLE OF MODULE:  .\Objects\WY8S8002XX (?C_STARTUP)
       000000C0H.0 SFRSYM    DATA     BIT       PIO0IF0
       000000B8H.2 SFRSYM    DATA     BIT       PX1
       000000C8H.0 SFRSYM    DATA     BIT       PIO1IF0
+LX51 LINKER/LOCATER V4.66.97.0                                                        09/09/2026  08:38:15  PAGE 35
+
+
       000000C0H.1 SFRSYM    DATA     BIT       PIO0IF1
       000000AEH   SFRSYM    DATA     BYTE      ADCCON0
       000000A7H   SFRSYM    DATA     BYTE      PWMDTFBC
@@ -2379,9 +2341,6 @@ SYMBOL TABLE OF MODULE:  .\Objects\WY8S8002XX (?C_STARTUP)
       0000008EH   SFRSYM    DATA     BYTE      SWTCON
       00000082H   SFRSYM    DATA     BYTE      DPL
       000000F8H.7 SFRSYM    DATA     BIT       SM0_1
-LX51 LINKER/LOCATER V4.66.97.0                                                        09/08/2026  08:43:14  PAGE 36
-
-
       000000C8H.7 SFRSYM    DATA     BIT       PIO1IF7
       00000091H   SFRSYM    DATA     BYTE      P1DIR
       000000F8H.6 SFRSYM    DATA     BIT       SM1_1
@@ -2409,50 +2368,50 @@ SYMBOL TABLE OF MODULE:  .\Objects\WY8S8002XX (?C_STARTUP)
       0000009FH   SFRSYM    DATA     BYTE      SYSRST
       000000F7H   SFRSYM    DATA     BYTE      TESTMODEEN
 
-      0100055AH   BLOCK     CODE     ---       LVL=0
+      0100054FH   BLOCK     CODE     ---       LVL=0
       00000007H   SYMBOL    DATA     BYTE      u8clkSel
       00000002H   SYMBOL    DATA     BYTE      u8divSel
       00000003H   SYMBOL    DATA     BYTE      u8waits
-      0100055AH   LINE      CODE     ---       #49
-      0100055CH   LINE      CODE     ---       #50
-      0100055CH   LINE      CODE     ---       #52
-      01000566H   LINE      CODE     ---       #53
-      01000566H   LINE      CODE     ---       #54
-      0100056DH   LINE      CODE     ---       #55
-      0100056DH   LINE      CODE     ---       #57
-      01000578H   LINE      CODE     ---       #58
-      01000578H   LINE      CODE     ---       #59
-      01000578H   LINE      CODE     ---       #60
-      0100057BH   LINE      CODE     ---       #61
-      0100057EH   LINE      CODE     ---       #62
-      0100058AH   LINE      CODE     ---       #63
-      0100058CH   LINE      CODE     ---       #64
-      0100058CH   LINE      CODE     ---       #65
-      01000594H   LINE      CODE     ---       #66
-      0100059EH   LINE      CODE     ---       #67
-      010005A0H   LINE      CODE     ---       #68
-      010005A0H   LINE      CODE     ---       #69
-      010005A3H   LINE      CODE     ---       #70
-      010005ABH   LINE      CODE     ---       #71
-      010005B7H   LINE      CODE     ---       #72
-      010005B7H   LINE      CODE     ---       #73
-      010005B7H   LINE      CODE     ---       #75
-      010005BEH   LINE      CODE     ---       #77
-      010005C8H   LINE      CODE     ---       #78
-      010005C8H   LINE      CODE     ---       #79
-      010005CFH   LINE      CODE     ---       #80
-      010005CFH   LINE      CODE     ---       #82
-      010005E6H   LINE      CODE     ---       #83
+      0100054FH   LINE      CODE     ---       #49
+      01000551H   LINE      CODE     ---       #50
+      01000551H   LINE      CODE     ---       #52
+      0100055BH   LINE      CODE     ---       #53
+      0100055BH   LINE      CODE     ---       #54
+      01000562H   LINE      CODE     ---       #55
+      01000562H   LINE      CODE     ---       #57
+LX51 LINKER/LOCATER V4.66.97.0                                                        09/09/2026  08:38:15  PAGE 36
+
+
+      0100056DH   LINE      CODE     ---       #58
+      0100056DH   LINE      CODE     ---       #59
+      0100056DH   LINE      CODE     ---       #60
+      01000570H   LINE      CODE     ---       #61
+      01000573H   LINE      CODE     ---       #62
+      0100057FH   LINE      CODE     ---       #63
+      01000581H   LINE      CODE     ---       #64
+      01000581H   LINE      CODE     ---       #65
+      01000589H   LINE      CODE     ---       #66
+      01000593H   LINE      CODE     ---       #67
+      01000595H   LINE      CODE     ---       #68
+      01000595H   LINE      CODE     ---       #69
+      01000598H   LINE      CODE     ---       #70
+      010005A0H   LINE      CODE     ---       #71
+      010005ACH   LINE      CODE     ---       #72
+      010005ACH   LINE      CODE     ---       #73
+      010005ACH   LINE      CODE     ---       #75
+      010005B3H   LINE      CODE     ---       #77
+      010005BDH   LINE      CODE     ---       #78
+      010005BDH   LINE      CODE     ---       #79
+      010005C4H   LINE      CODE     ---       #80
+      010005C4H   LINE      CODE     ---       #82
+      010005DBH   LINE      CODE     ---       #83
       ---         BLOCKEND  ---      ---       LVL=0
       00000007H   SYMBOL    DATA     BYTE      dir
       00000004H   SYMBOL    DATA     WORD      step
       00000002H   SYMBOL    DATA     WORD      fine_tune
-LX51 LINKER/LOCATER V4.66.97.0                                                        09/08/2026  08:43:14  PAGE 37
-
-
 
       ---         MODULE    ---      ---       DELAY
-      010006F2H   PUBLIC    CODE     ---       _Timer0_Delay_ms
+      010006C3H   PUBLIC    CODE     ---       _Timer0_Delay_ms
       00000080H   SFRSYM    DATA     BYTE      P0
       00000090H   SFRSYM    DATA     BYTE      P1
       000000A0H   SFRSYM    DATA     BYTE      P2
@@ -2488,6 +2447,9 @@ SYMBOL TABLE OF MODULE:  .\Objects\WY8S8002XX (?C_STARTUP)
       000000FDH   SFRSYM    DATA     BYTE      P0UP
       000000F6H   SFRSYM    DATA     BYTE      T3RL
       00000094H   SFRSYM    DATA     BYTE      P1UP
+LX51 LINKER/LOCATER V4.66.97.0                                                        09/09/2026  08:38:15  PAGE 37
+
+
       000000D8H   SFRSYM    DATA     BYTE      PWMINTF
       000000A4H   SFRSYM    DATA     BYTE      P2UP
       000000C3H   SFRSYM    DATA     BYTE      PWMCNTM
@@ -2515,9 +2477,6 @@ SYMBOL TABLE OF MODULE:  .\Objects\WY8S8002XX (?C_STARTUP)
       000000D7H   SFRSYM    DATA     BYTE      PWMD1H
       000000CFH   SFRSYM    DATA     BYTE      PWMOUTD
       000000AFH   SFRSYM    DATA     BYTE      ADCMPL
-LX51 LINKER/LOCATER V4.66.97.0                                                        09/08/2026  08:43:14  PAGE 38
-
-
       000000A0H.2 SFRSYM    DATA     BIT       P22
       00000090H.3 SFRSYM    DATA     BIT       P13
       00000080H.4 SFRSYM    DATA     BIT       P04
@@ -2556,6 +2515,9 @@ SYMBOL TABLE OF MODULE:  .\Objects\WY8S8002XX (?C_STARTUP)
       00000088H.1 SFRSYM    DATA     BIT       IE0
       000000C5H   SFRSYM    DATA     BYTE      PWMP0H
       000000C2H   SFRSYM    DATA     BYTE      PWMPSC01
+LX51 LINKER/LOCATER V4.66.97.0                                                        09/09/2026  08:38:15  PAGE 38
+
+
       000000BBH   SFRSYM    DATA     BYTE      SPICFG
       00000088H.3 SFRSYM    DATA     BIT       IE1
       000000DCH   SFRSYM    DATA     BYTE      PWMP1H
@@ -2583,9 +2545,6 @@ SYMBOL TABLE OF MODULE:  .\Objects\WY8S8002XX (?C_STARTUP)
       000000A8H.1 SFRSYM    DATA     BIT       ET1
       00000088H.5 SFRSYM    DATA     BIT       TF0
       000000E5H   SFRSYM    DATA     WORD      HRCFTUNE16
-LX51 LINKER/LOCATER V4.66.97.0                                                        09/08/2026  08:43:14  PAGE 39
-
-
       000000B9H   SFRSYM    DATA     BYTE      IP1
       000000A8H.2 SFRSYM    DATA     BIT       ET2
       00000088H.7 SFRSYM    DATA     BIT       TF1
@@ -2624,6 +2583,9 @@ SYMBOL TABLE OF MODULE:  .\Objects\WY8S8002XX (?C_STARTUP)
       000000BEH   SFRSYM    DATA     BYTE      SPIRDR
       00000088H.6 SFRSYM    DATA     BIT       TR1
       000000B8H.0 SFRSYM    DATA     BIT       PX0
+LX51 LINKER/LOCATER V4.66.97.0                                                        09/09/2026  08:38:15  PAGE 39
+
+
       000000B0H.6 SFRSYM    DATA     BIT       ADCIF
       000000BFH   SFRSYM    DATA     BYTE      SPITDR
       000000C0H.0 SFRSYM    DATA     BIT       PIO0IF0
@@ -2651,9 +2613,6 @@ SYMBOL TABLE OF MODULE:  .\Objects\WY8S8002XX (?C_STARTUP)
       000000B0H.5 SFRSYM    DATA     BIT       ADCSC
       000000C8H.6 SFRSYM    DATA     BIT       PIO1IF6
       000000C0H.7 SFRSYM    DATA     BIT       PIO0IF7
-LX51 LINKER/LOCATER V4.66.97.0                                                        09/08/2026  08:43:14  PAGE 40
-
-
       000000FAH   SFRSYM    DATA     BYTE      P0DIR
       00000096H   SFRSYM    DATA     BYTE      P1DRH
       0000008EH   SFRSYM    DATA     BYTE      SWTCON
@@ -2686,22 +2645,25 @@ SYMBOL TABLE OF MODULE:  .\Objects\WY8S8002XX (?C_STARTUP)
       0000009FH   SFRSYM    DATA     BYTE      SYSRST
       000000F7H   SFRSYM    DATA     BYTE      TESTMODEEN
 
-      010006F2H   BLOCK     CODE     ---       LVL=0
+      010006C3H   BLOCK     CODE     ---       LVL=0
       00000007H   SYMBOL    DATA     BYTE      u8Xms
-      010006F2H   LINE      CODE     ---       #19
-      010006F2H   LINE      CODE     ---       #20
-      010006F2H   LINE      CODE     ---       #21
-      010006FAH   LINE      CODE     ---       #22
-      010006FCH   LINE      CODE     ---       #23
-      010006FFH   LINE      CODE     ---       #24
-      010006FFH   LINE      CODE     ---       #25
-      01000702H   LINE      CODE     ---       #26
-      01000705H   LINE      CODE     ---       #27
-      01000708H   LINE      CODE     ---       #29
-      0100070AH   LINE      CODE     ---       #30
-      0100070BH   LINE      CODE     ---       #31
-      0100070DH   LINE      CODE     ---       #32
-      0100070FH   LINE      CODE     ---       #33
+      010006C3H   LINE      CODE     ---       #19
+      010006C3H   LINE      CODE     ---       #20
+      010006C3H   LINE      CODE     ---       #21
+      010006CBH   LINE      CODE     ---       #22
+LX51 LINKER/LOCATER V4.66.97.0                                                        09/09/2026  08:38:15  PAGE 40
+
+
+      010006CDH   LINE      CODE     ---       #23
+      010006D0H   LINE      CODE     ---       #24
+      010006D0H   LINE      CODE     ---       #25
+      010006D3H   LINE      CODE     ---       #26
+      010006D6H   LINE      CODE     ---       #27
+      010006D9H   LINE      CODE     ---       #29
+      010006DBH   LINE      CODE     ---       #30
+      010006DCH   LINE      CODE     ---       #31
+      010006DEH   LINE      CODE     ---       #32
+      010006E0H   LINE      CODE     ---       #33
       ---         BLOCKEND  ---      ---       LVL=0
 
       ---         MODULE    ---      ---       MAIN
@@ -2719,9 +2681,6 @@ SYMBOL TABLE OF MODULE:  .\Objects\WY8S8002XX (?C_STARTUP)
       000000BDH   SFRSYM    DATA     BYTE      SPISR
       000000FBH   SFRSYM    DATA     BYTE      P0OD
       000000F3H   SFRSYM    DATA     BYTE      TA
-LX51 LINKER/LOCATER V4.66.97.0                                                        09/08/2026  08:43:14  PAGE 41
-
-
       00000092H   SFRSYM    DATA     BYTE      P1OD
       000000EAH   SFRSYM    DATA     BYTE      IAPFD0
       000000A6H   SFRSYM    DATA     BYTE      P2OD
@@ -2760,6 +2719,9 @@ SYMBOL TABLE OF MODULE:  .\Objects\WY8S8002XX (?C_STARTUP)
       00000080H.0 SFRSYM    DATA     BIT       P00
       00000090H.0 SFRSYM    DATA     BIT       P10
       00000080H.1 SFRSYM    DATA     BIT       P01
+LX51 LINKER/LOCATER V4.66.97.0                                                        09/09/2026  08:38:15  PAGE 41
+
+
       00000099H   SFRSYM    DATA     BYTE      SBUF
       00000087H   SFRSYM    DATA     BYTE      PCON
       000000A0H.0 SFRSYM    DATA     BIT       P20
@@ -2787,9 +2749,6 @@ SYMBOL TABLE OF MODULE:  .\Objects\WY8S8002XX (?C_STARTUP)
       000000DBH   SFRSYM    DATA     BYTE      PWMD3H
       00000097H   SFRSYM    DATA     BYTE      SCKS
       00000089H   SFRSYM    DATA     BYTE      TMOD
-LX51 LINKER/LOCATER V4.66.97.0                                                        09/08/2026  08:43:14  PAGE 42
-
-
       00000088H   SFRSYM    DATA     BYTE      TCON
       000000D8H.1 SFRSYM    DATA     BIT       PWMIF1
       000000B0H.0 SFRSYM    DATA     BIT       ADCMPO
@@ -2828,6 +2787,9 @@ SYMBOL TABLE OF MODULE:  .\Objects\WY8S8002XX (?C_STARTUP)
       000000D2H   SFRSYM    DATA     BYTE      PWMPSC23
       000000C6H   SFRSYM    DATA     BYTE      PWMP0L
       000000AAH   SFRSYM    DATA     BYTE      PIO0EICFGH
+LX51 LINKER/LOCATER V4.66.97.0                                                        09/09/2026  08:38:15  PAGE 42
+
+
       000000DDH   SFRSYM    DATA     BYTE      PWMP1L
       000000ACH   SFRSYM    DATA     BYTE      PIO1EICFGH
       000000D8H.4 SFRSYM    DATA     BIT       PWMFBF
@@ -2855,9 +2817,6 @@ SYMBOL TABLE OF MODULE:  .\Objects\WY8S8002XX (?C_STARTUP)
       000000A8H.5 SFRSYM    DATA     BIT       ET5
       00000098H.3 SFRSYM    DATA     BIT       TB8
       00000088H.2 SFRSYM    DATA     BIT       IT1
-LX51 LINKER/LOCATER V4.66.97.0                                                        09/08/2026  08:43:14  PAGE 43
-
-
       000000E4H   SFRSYM    DATA     BYTE      TESTMODESEL
       000000BCH   SFRSYM    DATA     BYTE      SPIMOD
       000000D0H.0 SFRSYM    DATA     BIT       P
@@ -2896,6 +2855,9 @@ SYMBOL TABLE OF MODULE:  .\Objects\WY8S8002XX (?C_STARTUP)
       000000B1H   SFRSYM    DATA     BYTE      ADCCON1
       000000C8H.2 SFRSYM    DATA     BIT       PIO1IF2
       000000C0H.3 SFRSYM    DATA     BIT       PIO0IF3
+LX51 LINKER/LOCATER V4.66.97.0                                                        09/09/2026  08:38:15  PAGE 43
+
+
       000000B0H.7 SFRSYM    DATA     BIT       ADCEN
       000000B2H   SFRSYM    DATA     BYTE      ADCCON2
       00000083H   SFRSYM    DATA     BYTE      DPH
@@ -2923,9 +2885,6 @@ SYMBOL TABLE OF MODULE:  .\Objects\WY8S8002XX (?C_STARTUP)
       000000F8H.5 SFRSYM    DATA     BIT       SM2_1
       000000B4H   SFRSYM    DATA     BYTE      ADCRH
       000000EFH   SFRSYM    DATA     BYTE      IAPAH
-LX51 LINKER/LOCATER V4.66.97.0                                                        09/08/2026  08:43:14  PAGE 44
-
-
       000000CDH   SFRSYM    DATA     BYTE      PWMSO0DATA
       00000095H   SFRSYM    DATA     BYTE      P1DRL
       00000098H.4 SFRSYM    DATA     BIT       REN
@@ -2944,38 +2903,41 @@ SYMBOL TABLE OF MODULE:  .\Objects\WY8S8002XX (?C_STARTUP)
       000000D0H   SFRSYM    DATA     BYTE      PSW
       0000009FH   SFRSYM    DATA     BYTE      SYSRST
       000000F7H   SFRSYM    DATA     BYTE      TESTMODEEN
-      01000728H   SYMBOL    CODE     ---       DelaySampleInterval
-      01000308H   SYMBOL    CODE     ---       _ADC_ReadFilteredCurrentX10Ma
-      010006D3H   SYMBOL    CODE     ---       ADC_InitCurrentInputs
-      010006B3H   SYMBOL    CODE     ---       GPIO_InitLedOutputs
+      010006F9H   SYMBOL    CODE     ---       DelaySampleInterval
+      010002FDH   SYMBOL    CODE     ---       _ADC_ReadFilteredCurrentX10Ma
+      010006A4H   SYMBOL    CODE     ---       ADC_InitCurrentInputs
+      01000684H   SYMBOL    CODE     ---       GPIO_InitLedOutputs
 
-      010006B3H   BLOCK     CODE     ---       LVL=0
-      010006B3H   LINE      CODE     ---       #40
-      010006B3H   LINE      CODE     ---       #41
-      010006B3H   LINE      CODE     ---       #42
-      010006B8H   LINE      CODE     ---       #43
-      010006BAH   LINE      CODE     ---       #46
-      010006C3H   LINE      CODE     ---       #47
-      010006CEH   LINE      CODE     ---       #50
-      010006D0H   LINE      CODE     ---       #51
-      010006D2H   LINE      CODE     ---       #53
+      01000684H   BLOCK     CODE     ---       LVL=0
+      01000684H   LINE      CODE     ---       #42
+      01000684H   LINE      CODE     ---       #43
+      01000684H   LINE      CODE     ---       #44
+      01000689H   LINE      CODE     ---       #45
+      0100068BH   LINE      CODE     ---       #48
+      01000694H   LINE      CODE     ---       #49
+      0100069FH   LINE      CODE     ---       #52
+      010006A1H   LINE      CODE     ---       #53
+      010006A3H   LINE      CODE     ---       #55
       ---         BLOCKEND  ---      ---       LVL=0
 
-      010006D3H   BLOCK     CODE     ---       LVL=0
-      010006D3H   LINE      CODE     ---       #55
-      010006D3H   LINE      CODE     ---       #56
-      010006D3H   LINE      CODE     ---       #57
-      010006DAH   LINE      CODE     ---       #58
-      010006E1H   LINE      CODE     ---       #60
-      010006E4H   LINE      CODE     ---       #61
-      010006E7H   LINE      CODE     ---       #62
-      010006EAH   LINE      CODE     ---       #63
-      010006EDH   LINE      CODE     ---       #64
+      010006A4H   BLOCK     CODE     ---       LVL=0
+      010006A4H   LINE      CODE     ---       #57
+      010006A4H   LINE      CODE     ---       #58
+LX51 LINKER/LOCATER V4.66.97.0                                                        09/09/2026  08:38:15  PAGE 44
+
+
+      010006A4H   LINE      CODE     ---       #59
+      010006ABH   LINE      CODE     ---       #60
+      010006B2H   LINE      CODE     ---       #62
+      010006B5H   LINE      CODE     ---       #63
+      010006B8H   LINE      CODE     ---       #64
+      010006BBH   LINE      CODE     ---       #65
+      010006BEH   LINE      CODE     ---       #66
       ---         BLOCKEND  ---      ---       LVL=0
 
-      01000308H   BLOCK     CODE     ---       LVL=0
+      010002FDH   BLOCK     CODE     ---       LVL=0
       00000003H   SYMBOL    DATA     BYTE      channel
-      01000308H   BLOCK     CODE     NEAR LAB  LVL=1
+      010002FDH   BLOCK     CODE     NEAR LAB  LVL=1
       00000012H   SYMBOL    DATA     BYTE      sample
       00000002H   SYMBOL    DATA     WORD      adc_value
       00000013H   SYMBOL    DATA     WORD      min_value1
@@ -2984,111 +2946,150 @@ SYMBOL TABLE OF MODULE:  .\Objects\WY8S8002XX (?C_STARTUP)
       00000019H   SYMBOL    DATA     WORD      max_value2
       0000001BH   SYMBOL    DATA     DWORD     adc_sum
       ---         BLOCKEND  ---      ---       LVL=1
-      01000308H   LINE      CODE     ---       #67
-      01000308H   LINE      CODE     ---       #68
-      01000308H   LINE      CODE     ---       #71
-      0100030EH   LINE      CODE     ---       #72
-      01000312H   LINE      CODE     ---       #73
-      01000317H   LINE      CODE     ---       #74
-      0100031BH   LINE      CODE     ---       #75
-LX51 LINKER/LOCATER V4.66.97.0                                                        09/08/2026  08:43:14  PAGE 45
-
-
-      01000323H   LINE      CODE     ---       #77
-      01000328H   LINE      CODE     ---       #78
-      01000335H   LINE      CODE     ---       #79
-      01000335H   LINE      CODE     ---       #80
-      01000338H   LINE      CODE     ---       #81
-      0100033FH   LINE      CODE     ---       #82
-      01000356H   LINE      CODE     ---       #84
-      0100035FH   LINE      CODE     ---       #85
-      0100035FH   LINE      CODE     ---       #86
-      01000365H   LINE      CODE     ---       #87
-      01000369H   LINE      CODE     ---       #88
-      0100036BH   LINE      CODE     ---       #89
-      01000374H   LINE      CODE     ---       #90
-      01000374H   LINE      CODE     ---       #91
-      01000378H   LINE      CODE     ---       #92
-      01000378H   LINE      CODE     ---       #94
-      01000381H   LINE      CODE     ---       #95
-      01000381H   LINE      CODE     ---       #96
-      01000387H   LINE      CODE     ---       #97
-      0100038BH   LINE      CODE     ---       #98
-      0100038DH   LINE      CODE     ---       #99
-      01000396H   LINE      CODE     ---       #100
-      01000396H   LINE      CODE     ---       #101
-      0100039AH   LINE      CODE     ---       #102
-      0100039AH   LINE      CODE     ---       #103
-      0100039EH   LINE      CODE     ---       #105
-      010003E8H   LINE      CODE     ---       #107
+      010002FDH   LINE      CODE     ---       #69
+      010002FDH   LINE      CODE     ---       #70
+      010002FDH   LINE      CODE     ---       #73
+      01000303H   LINE      CODE     ---       #74
+      01000307H   LINE      CODE     ---       #75
+      0100030CH   LINE      CODE     ---       #76
+      01000310H   LINE      CODE     ---       #77
+      01000318H   LINE      CODE     ---       #79
+      0100031DH   LINE      CODE     ---       #80
+      0100032AH   LINE      CODE     ---       #81
+      0100032AH   LINE      CODE     ---       #82
+      0100032DH   LINE      CODE     ---       #83
+      01000334H   LINE      CODE     ---       #84
+      0100034BH   LINE      CODE     ---       #86
+      01000354H   LINE      CODE     ---       #87
+      01000354H   LINE      CODE     ---       #88
+      0100035AH   LINE      CODE     ---       #89
+      0100035EH   LINE      CODE     ---       #90
+      01000360H   LINE      CODE     ---       #91
+      01000369H   LINE      CODE     ---       #92
+      01000369H   LINE      CODE     ---       #93
+      0100036DH   LINE      CODE     ---       #94
+      0100036DH   LINE      CODE     ---       #96
+      01000376H   LINE      CODE     ---       #97
+      01000376H   LINE      CODE     ---       #98
+      0100037CH   LINE      CODE     ---       #99
+      01000380H   LINE      CODE     ---       #100
+      01000382H   LINE      CODE     ---       #101
+      0100038BH   LINE      CODE     ---       #102
+      0100038BH   LINE      CODE     ---       #103
+      0100038FH   LINE      CODE     ---       #104
+      0100038FH   LINE      CODE     ---       #105
+      01000393H   LINE      CODE     ---       #107
+      010003DDH   LINE      CODE     ---       #109
       ---         BLOCKEND  ---      ---       LVL=0
 
-      01000728H   BLOCK     CODE     ---       LVL=0
-      01000728H   BLOCK     CODE     NEAR LAB  LVL=1
+      010006F9H   BLOCK     CODE     ---       LVL=0
+      010006F9H   BLOCK     CODE     NEAR LAB  LVL=1
       00000012H   SYMBOL    DATA     BYTE      part
       ---         BLOCKEND  ---      ---       LVL=1
-      01000728H   LINE      CODE     ---       #111
-      01000728H   LINE      CODE     ---       #112
-      01000728H   LINE      CODE     ---       #115
-      01000735H   LINE      CODE     ---       #116
-      01000735H   LINE      CODE     ---       #117
-      0100073AH   LINE      CODE     ---       #118
-      0100073EH   LINE      CODE     ---       #119
+      010006F9H   LINE      CODE     ---       #113
+      010006F9H   LINE      CODE     ---       #114
+      010006F9H   LINE      CODE     ---       #117
+      01000706H   LINE      CODE     ---       #118
+      01000706H   LINE      CODE     ---       #119
+LX51 LINKER/LOCATER V4.66.97.0                                                        09/09/2026  08:38:15  PAGE 45
+
+
+      0100070BH   LINE      CODE     ---       #120
+      0100070FH   LINE      CODE     ---       #121
       ---         BLOCKEND  ---      ---       LVL=0
 
       010001F1H   BLOCK     CODE     ---       LVL=0
       010001F1H   BLOCK     CODE     NEAR LAB  LVL=1
       00000008H   SYMBOL    DATA     DWORD     current_x10_ma0
       0000000CH   SYMBOL    DATA     DWORD     current_x10_ma1
-      00000010H   SYMBOL    DATA     BYTE      sign0
-      00000011H   SYMBOL    DATA     BYTE      sign1
+      00000010H   SYMBOL    DATA     BYTE      confirm_count0
+      00000011H   SYMBOL    DATA     BYTE      confirm_count1
       ---         BLOCKEND  ---      ---       LVL=1
-      010001F1H   LINE      CODE     ---       #121
-      010001F1H   LINE      CODE     ---       #122
       010001F1H   LINE      CODE     ---       #123
-      010001FAH   LINE      CODE     ---       #124
-      01000202H   LINE      CODE     ---       #126
-      01000204H   LINE      CODE     ---       #127
-      01000206H   LINE      CODE     ---       #129
-      0100020EH   LINE      CODE     ---       #130
-      01000211H   LINE      CODE     ---       #131
-      01000214H   LINE      CODE     ---       #132
-      0100021DH   LINE      CODE     ---       #133
-      01000222H   LINE      CODE     ---       #135
-      01000227H   LINE      CODE     ---       #136
-      01000227H   LINE      CODE     ---       #137
-      01000227H   LINE      CODE     ---       #139
-      01000234H   LINE      CODE     ---       #140
-LX51 LINKER/LOCATER V4.66.97.0                                                        09/08/2026  08:43:14  PAGE 46
+      010001F1H   LINE      CODE     ---       #124
+      010001F1H   LINE      CODE     ---       #125
+      010001FAH   LINE      CODE     ---       #126
+      01000202H   LINE      CODE     ---       #128
+      01000204H   LINE      CODE     ---       #129
+      01000206H   LINE      CODE     ---       #131
+      0100020EH   LINE      CODE     ---       #132
+      01000211H   LINE      CODE     ---       #133
+      01000214H   LINE      CODE     ---       #137
+      01000219H   LINE      CODE     ---       #138
+      01000219H   LINE      CODE     ---       #139
+      01000219H   LINE      CODE     ---       #141
+      01000226H   LINE      CODE     ---       #142
+      01000230H   LINE      CODE     ---       #143
+      01000230H   LINE      CODE     ---       #144
+      01000233H   LINE      CODE     ---       #146
+      01000247H   LINE      CODE     ---       #147
+      01000247H   LINE      CODE     ---       #149
+      01000249H   LINE      CODE     ---       #150
+      0100024FH   LINE      CODE     ---       #151
+      01000251H   LINE      CODE     ---       #153
+      01000251H   LINE      CODE     ---       #155
+      01000253H   LINE      CODE     ---       #156
+      01000253H   LINE      CODE     ---       #157
+      01000255H   LINE      CODE     ---       #159
+      01000255H   LINE      CODE     ---       #161
+      0100026AH   LINE      CODE     ---       #162
+      0100026AH   LINE      CODE     ---       #163
+      0100026CH   LINE      CODE     ---       #164
+      01000275H   LINE      CODE     ---       #165
+      01000275H   LINE      CODE     ---       #167
+      01000277H   LINE      CODE     ---       #168
+      0100027DH   LINE      CODE     ---       #169
+      0100027DH   LINE      CODE     ---       #170
+      0100027FH   LINE      CODE     ---       #172
+      0100027FH   LINE      CODE     ---       #173
+      01000281H   LINE      CODE     ---       #174
+      01000281H   LINE      CODE     ---       #175
+      01000283H   LINE      CODE     ---       #177
+      01000283H   LINE      CODE     ---       #179
+      01000285H   LINE      CODE     ---       #180
+      01000288H   LINE      CODE     ---       #181
+      01000288H   LINE      CODE     ---       #182
+      01000288H   LINE      CODE     ---       #186
+      01000295H   LINE      CODE     ---       #187
+      0100029FH   LINE      CODE     ---       #188
+      0100029FH   LINE      CODE     ---       #189
+      010002A2H   LINE      CODE     ---       #191
+      010002B6H   LINE      CODE     ---       #192
+      010002B6H   LINE      CODE     ---       #194
+      010002B8H   LINE      CODE     ---       #195
+      010002BEH   LINE      CODE     ---       #196
+      010002C0H   LINE      CODE     ---       #198
+LX51 LINKER/LOCATER V4.66.97.0                                                        09/09/2026  08:38:15  PAGE 46
 
 
-      0100024FH   LINE      CODE     ---       #141
-      01000255H   LINE      CODE     ---       #143
-      0100026BH   LINE      CODE     ---       #144
-      0100026BH   LINE      CODE     ---       #145
-      01000271H   LINE      CODE     ---       #146
-      01000273H   LINE      CODE     ---       #148
-      0100028DH   LINE      CODE     ---       #149
-      0100028DH   LINE      CODE     ---       #150
-      01000293H   LINE      CODE     ---       #151
-      01000293H   LINE      CODE     ---       #155
-      010002A0H   LINE      CODE     ---       #156
-      010002BBH   LINE      CODE     ---       #157
-      010002C1H   LINE      CODE     ---       #158
-      010002D7H   LINE      CODE     ---       #159
-      010002D7H   LINE      CODE     ---       #160
-      010002DDH   LINE      CODE     ---       #161
-      010002DFH   LINE      CODE     ---       #163
-      010002F9H   LINE      CODE     ---       #164
-      010002F9H   LINE      CODE     ---       #165
-      010002FFH   LINE      CODE     ---       #166
-      010002FFH   LINE      CODE     ---       #183
-      01000302H   LINE      CODE     ---       #185
-      01000305H   LINE      CODE     ---       #186
+      010002C0H   LINE      CODE     ---       #200
+      010002C2H   LINE      CODE     ---       #201
+      010002C2H   LINE      CODE     ---       #202
+      010002C4H   LINE      CODE     ---       #204
+      010002C4H   LINE      CODE     ---       #206
+      010002D9H   LINE      CODE     ---       #207
+      010002D9H   LINE      CODE     ---       #208
+      010002DBH   LINE      CODE     ---       #209
+      010002E4H   LINE      CODE     ---       #210
+      010002E4H   LINE      CODE     ---       #212
+      010002E6H   LINE      CODE     ---       #213
+      010002ECH   LINE      CODE     ---       #214
+      010002ECH   LINE      CODE     ---       #215
+      010002EEH   LINE      CODE     ---       #217
+      010002EEH   LINE      CODE     ---       #218
+      010002F0H   LINE      CODE     ---       #219
+      010002F0H   LINE      CODE     ---       #220
+      010002F2H   LINE      CODE     ---       #222
+      010002F2H   LINE      CODE     ---       #224
+      010002F4H   LINE      CODE     ---       #225
+      010002F7H   LINE      CODE     ---       #226
+      010002F7H   LINE      CODE     ---       #227
+      010002F7H   LINE      CODE     ---       #244
+      010002FAH   LINE      CODE     ---       #247
       ---         BLOCKEND  ---      ---       LVL=0
 
       ---         MODULE    ---      ---       ?C_INIT
-      01000515H   PUBLIC    CODE     ---       ?C_START
+      0100050AH   PUBLIC    CODE     ---       ?C_START
 
       ---         MODULE    ---      ---       ?C?CLDPTR
       01000003H   PUBLIC    CODE     ---       ?C?CLDPTR
@@ -3117,5 +3118,5 @@ SYMBOL TABLE OF MODULE:  .\Objects\WY8S8002XX (?C_STARTUP)
       ---         MODULE    ---      ---       ?C_IBP
       00000029H   PUBLIC    DATA     ---       ?C_IBP
 
-Program Size: data=43.0 xdata=0 const=0 code=1906
+Program Size: data=43.0 xdata=0 const=0 code=1831
 LX51 RUN COMPLETE.  0 WARNING(S),  0 ERROR(S)

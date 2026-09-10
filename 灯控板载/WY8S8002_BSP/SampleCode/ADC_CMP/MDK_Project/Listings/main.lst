@@ -1,4 +1,4 @@
-C51 COMPILER V9.60.0.0   MAIN                                                              09/09/2026 08:38:15 PAGE 1   
+C51 COMPILER V9.60.0.0   MAIN                                                              09/09/2026 14:21:14 PAGE 1   
 
 
 C51 COMPILER V9.60.0.0, COMPILATION OF MODULE MAIN
@@ -25,245 +25,246 @@ line level    source
   15          #define ADC_FULL_SCALE                (4095UL)
   16          //电阻阻值
   17          #define CURRENT_SENSE_RESISTOR_MOHM   (80UL)
-  18          //电流固定点缩放因子
+  18          //电流固定点缩放因子   
   19          #define CURRENT_FIXED_POINT_SCALE     (10UL)
   20          //三个端口的电流判断值
-  21          uint16_t current_threshold_x10_ma0=3000U;
-  22          uint16_t current_threshold_x10_ma1=3000U;
-  23          uint16_t current_threshold_x10_ma2=4000U;
+  21          uint16_t current_threshold_x10_ma0=2500U;
+  22          uint16_t current_threshold_x10_ma1=2500U;
+  23          // uint16_t current_threshold_x10_ma2=4000U;
   24          //采样间隔
   25          #define SAMPLE_INTERVAL_PART_MS       (10U)
-  26          //采样100ms间隔次数
+  26          //采样10ms间隔次数
   27          #define SAMPLE_INTERVAL_PART_COUNT    (1U)
   28          #define CURRENT_CONVERSION_DIVISOR \
   29              ((ADC_FULL_SCALE * ADC_FILTERED_SAMPLE_COUNT * CURRENT_SENSE_RESISTOR_MOHM) / 1000UL)
   30          
   31          //变化值和钳位值
-  32          #define full 3500U
-  33          #define limix 5000U
-  34          //钳位次数
-  35          #define NEW_BATTERY_CONFIRM_COUNT 30U
-  36          
-  37          static void GPIO_InitLedOutputs(void);
-  38          static void ADC_InitCurrentInputs(void);
-  39          static uint32_t ADC_ReadFilteredCurrentX10Ma(uint8_t channel);
-  40          static void DelaySampleInterval(void);
-  41          
-  42          static void GPIO_InitLedOutputs(void)
-  43          {
-  44   1          PORT_SET_MUX(PIO00CFG, GPIO_MUX_MODE);
-  45   1          PORT_SET_MUX(PIO01CFG, GPIO_MUX_MODE);
-  46   1          // PORT_SET_MUX(PIO02CFG, GPIO_MUX_MODE);
-  47   1      
-  48   1          GPIO0_ConfigOutput(GPIO_PIN_0, GPIO_PP, GPIO_NOPULL, CURRENT_00);
-  49   1          GPIO0_ConfigOutput(GPIO_PIN_1, GPIO_PP, GPIO_NOPULL, CURRENT_00);
-  50   1          // GPIO0_ConfigOutput(GPIO_PIN_2, GPIO_PP, GPIO_NOPULL, CURRENT_00);
-  51   1      
-  52   1          P00 = OUTPUT_LOW;
-  53   1          P01 = OUTPUT_LOW;
-  54   1          // P02 = OUTPUT_LOW;
-C51 COMPILER V9.60.0.0   MAIN                                                              09/09/2026 08:38:15 PAGE 2   
+  32          #define full  2500U
+  33          #define limix 4500U
+  34          
+  35          //钳位次数
+  36          #define NEW_BATTERY_CONFIRM_COUNT 30U
+  37          
+  38          static void GPIO_InitLedOutputs(void);
+  39          static void ADC_InitCurrentInputs(void);
+  40          static uint32_t ADC_ReadFilteredCurrentX10Ma(uint8_t channel);
+  41          static void DelaySampleInterval(void);
+  42          
+  43          static void GPIO_InitLedOutputs(void)
+  44          {
+  45   1          PORT_SET_MUX(PIO00CFG, GPIO_MUX_MODE);
+  46   1          PORT_SET_MUX(PIO01CFG, GPIO_MUX_MODE);
+  47   1          // PORT_SET_MUX(PIO02CFG, GPIO_MUX_MODE);
+  48   1      
+  49   1          GPIO0_ConfigOutput(GPIO_PIN_0, GPIO_PP, GPIO_NOPULL, CURRENT_00);
+  50   1          GPIO0_ConfigOutput(GPIO_PIN_1, GPIO_PP, GPIO_NOPULL, CURRENT_00);
+  51   1          // GPIO0_ConfigOutput(GPIO_PIN_2, GPIO_PP, GPIO_NOPULL, CURRENT_00);
+  52   1      
+  53   1          P00 = OUTPUT_LOW;
+  54   1          P01 = OUTPUT_LOW;
+C51 COMPILER V9.60.0.0   MAIN                                                              09/09/2026 14:21:14 PAGE 2   
 
-  55   1      }
-  56          
-  57          static void ADC_InitCurrentInputs(void)
-  58          {
-  59   1          ADC_ConfigChannel(ADC_AIN6, ADC_DIV_4); /* P03 */
-  60   1          ADC_ConfigChannel(ADC_AIN5, ADC_DIV_4); /* P04 */
-  61   1          // ADC_ConfigChannel(ADC_AIN4, ADC_DIV_4); /* P05 */
-  62   1          ADC_ADCCON1_VREF_SEL(ADC_INPUT_VREF_AVDD);
-  63   1          ADC_SMP_SEL(ADC_CLKP_8);
-  64   1          ADC_ConfigSWCVT();
-  65   1          ENABLE_ADC;
-  66   1          Timer0_Delay_ms(1U);
-  67   1      }
-  68          
-  69          static uint32_t ADC_ReadFilteredCurrentX10Ma(uint8_t channel)
-  70          {
-  71   1          uint8_t sample;
-  72   1          uint16_t adc_value;
-  73   1          uint16_t min_value1 = 0xFFFFU;
-  74   1          uint16_t min_value2 = 0xFFFFU;
-  75   1          uint16_t max_value1 = 0U;
-  76   1          uint16_t max_value2 = 0U;
-  77   1          uint32_t adc_sum = 0UL;
-  78   1      
-  79   1          ADC_ConfigChannel(channel, ADC_DIV_4);
-  80   1          for(sample = 0U; sample < ADC_SAMPLE_COUNT; sample++)
-  81   1          {
-  82   2              ADC_StartSWCVT();
-  83   2              adc_value = ADC_GetResultQueryMode();
-  84   2              adc_sum += adc_value;
-  85   2      
-  86   2              if(adc_value < min_value1)
-  87   2              {
-  88   3                  min_value2 = min_value1;
-  89   3                  min_value1 = adc_value;
-  90   3              }
-  91   2              else if(adc_value < min_value2)
-  92   2              {
-  93   3                  min_value2 = adc_value;
-  94   3              }
-  95   2      
-  96   2              if(adc_value > max_value1)
-  97   2              {
-  98   3                  max_value2 = max_value1;
-  99   3                  max_value1 = adc_value;
- 100   3              }
- 101   2              else if(adc_value > max_value2)
- 102   2              {
- 103   3                  max_value2 = adc_value;
- 104   3              }
- 105   2          }
- 106   1      
- 107   1          adc_sum -= (uint32_t)min_value1 + min_value2 + max_value1 + max_value2;
- 108   1      
- 109   1          return (adc_sum * ADC_REFERENCE_MV * CURRENT_FIXED_POINT_SCALE) /
- 110   1                 CURRENT_CONVERSION_DIVISOR;
- 111   1      }
- 112          
- 113          static void DelaySampleInterval(void)
- 114          {
- 115   1          uint8_t part;
- 116   1      
-C51 COMPILER V9.60.0.0   MAIN                                                              09/09/2026 08:38:15 PAGE 3   
+  55   1          // P02 = OUTPUT_LOW;
+  56   1      }
+  57          
+  58          static void ADC_InitCurrentInputs(void)
+  59          {
+  60   1          ADC_ConfigChannel(ADC_AIN6, ADC_DIV_4); /* P03 */
+  61   1          ADC_ConfigChannel(ADC_AIN5, ADC_DIV_4); /* P04 */
+  62   1          // ADC_ConfigChannel(ADC_AIN4, ADC_DIV_4); /* P05 */
+  63   1          ADC_ADCCON1_VREF_SEL(ADC_INPUT_VREF_AVDD);
+  64   1          ADC_SMP_SEL(ADC_CLKP_8);
+  65   1          ADC_ConfigSWCVT();
+  66   1          ENABLE_ADC;
+  67   1          Timer0_Delay_ms(1U);
+  68   1      }
+  69          
+  70          static uint32_t ADC_ReadFilteredCurrentX10Ma(uint8_t channel)
+  71          {
+  72   1          uint8_t sample;
+  73   1          uint16_t adc_value;
+  74   1          uint16_t min_value1 = 0xFFFFU;
+  75   1          uint16_t min_value2 = 0xFFFFU;
+  76   1          uint16_t max_value1 = 0U;
+  77   1          uint16_t max_value2 = 0U;
+  78   1          uint32_t adc_sum = 0UL;
+  79   1      
+  80   1          ADC_ConfigChannel(channel, ADC_DIV_4);
+  81   1          for(sample = 0U; sample < ADC_SAMPLE_COUNT; sample++)
+  82   1          {
+  83   2              ADC_StartSWCVT();
+  84   2              adc_value = ADC_GetResultQueryMode();
+  85   2              adc_sum += adc_value;
+  86   2      
+  87   2              if(adc_value < min_value1)
+  88   2              {
+  89   3                  min_value2 = min_value1;
+  90   3                  min_value1 = adc_value;
+  91   3              }
+  92   2              else if(adc_value < min_value2)
+  93   2              {
+  94   3                  min_value2 = adc_value;
+  95   3              }
+  96   2      
+  97   2              if(adc_value > max_value1)
+  98   2              {
+  99   3                  max_value2 = max_value1;
+ 100   3                  max_value1 = adc_value;
+ 101   3              }
+ 102   2              else if(adc_value > max_value2)
+ 103   2              {
+ 104   3                  max_value2 = adc_value;
+ 105   3              }
+ 106   2          }
+ 107   1      
+ 108   1          adc_sum -= (uint32_t)min_value1 + min_value2 + max_value1 + max_value2;
+ 109   1      
+ 110   1          return (adc_sum * ADC_REFERENCE_MV * CURRENT_FIXED_POINT_SCALE) /
+ 111   1                 CURRENT_CONVERSION_DIVISOR;
+ 112   1      }
+ 113          
+ 114          static void DelaySampleInterval(void)
+ 115          {
+ 116   1          uint8_t part;
+C51 COMPILER V9.60.0.0   MAIN                                                              09/09/2026 14:21:14 PAGE 3   
 
- 117   1          for(part = 0U; part < SAMPLE_INTERVAL_PART_COUNT; part++)
- 118   1          {
- 119   2              Timer0_Delay_ms(SAMPLE_INTERVAL_PART_MS);
- 120   2          }
- 121   1      }
- 122          
- 123          int main(void)
- 124          {
- 125   1          uint32_t current_x10_ma0=0U;
- 126   1          uint32_t current_x10_ma1=0U;
- 127   1          // uint32_t current_x10_ma2=0U;
- 128   1          uint8_t confirm_count0=0U;
- 129   1          uint8_t confirm_count1=0U;
- 130   1          // uint8_t sign2=0;
- 131   1          System_ConfigCLK(SYSCLK_HRC, CLK_DIV_2,WAITS_INST_VDD_LT3600MV_CLK_GE15_LT20M);
- 132   1          GPIO_InitLedOutputs();
- 133   1          ADC_InitCurrentInputs();
- 134   1          // WDT_ConfigMode(WDT_DIV_1024, ENABLE_OVER_RST, WDT_IDLE_SLEEP_MODE);
- 135   1          // WDT_Run(ENABLE_WDT);
- 136   1          //延迟等待硬件稳定
- 137   1          Timer0_Delay_ms(5);
- 138   1          while(1)
- 139   1          {
- 140   2              //端口一模拟输入
- 141   2              current_x10_ma0 = ADC_ReadFilteredCurrentX10Ma(ADC_AIN6);
- 142   2              if(current_threshold_x10_ma0 == full)
- 143   2              {
- 144   3                  confirm_count0 = 0U;
- 145   3                  /* 正常充电阶段 */
- 146   3                  if(current_x10_ma0 < full)
- 147   3                  {
- 148   4                      /* 充满：亮绿灯并进入钳位状态 */
- 149   4                      P00 = OUTPUT_LOW;
- 150   4                      current_threshold_x10_ma0 = limix;
- 151   4                  }
- 152   3                  else
- 153   3                  {
- 154   4                      /* 电流尚未降到full以下 */
- 155   4                      P00 = OUTPUT_HIGH;
- 156   4                  }
- 157   3              }
- 158   2              else
- 159   2              {
- 160   3                  /* 充满后的钳位阶段 */
- 161   3                  if(current_x10_ma0 > limix)
- 162   3                  {
- 163   4                      confirm_count0++;
- 164   4                      if(confirm_count0 >= NEW_BATTERY_CONFIRM_COUNT)
- 165   4                      {
- 166   5                          /* 检测到新电池：亮红灯并恢复正常判断值 */
- 167   5                          P00 = OUTPUT_HIGH;
- 168   5                          current_threshold_x10_ma0 = full;
- 169   5                          confirm_count0 = 0U;
- 170   5                      }
- 171   4                      else
- 172   4                      {
- 173   5                          P00 = OUTPUT_LOW;
- 174   5                      }
- 175   4                  }
- 176   3                  else
- 177   3                  {
- 178   4                      /* 波动未超过钳位值，保持绿灯 */
-C51 COMPILER V9.60.0.0   MAIN                                                              09/09/2026 08:38:15 PAGE 4   
+ 117   1      
+ 118   1          for(part = 0U; part < SAMPLE_INTERVAL_PART_COUNT; part++)
+ 119   1          {
+ 120   2              Timer0_Delay_ms(SAMPLE_INTERVAL_PART_MS);
+ 121   2          }
+ 122   1      }
+ 123          
+ 124          int main(void)
+ 125          {
+ 126   1          uint32_t current_x10_ma0=0U;
+ 127   1          uint32_t current_x10_ma1=0U;
+ 128   1          // uint32_t current_x10_ma2=0U;
+ 129   1          uint8_t confirm_count0=0U;
+ 130   1          uint8_t confirm_count1=0U;
+ 131   1          // uint8_t sign2=0;
+ 132   1          System_ConfigCLK(SYSCLK_HRC, CLK_DIV_2,WAITS_INST_VDD_LT3600MV_CLK_GE15_LT20M);
+ 133   1          GPIO_InitLedOutputs();
+ 134   1          ADC_InitCurrentInputs();
+ 135   1          // WDT_ConfigMode(WDT_DIV_1024, ENABLE_OVER_RST, WDT_IDLE_SLEEP_MODE);
+ 136   1          // WDT_Run(ENABLE_WDT);
+ 137   1          //延迟等待硬件稳定
+ 138   1          Timer0_Delay_ms(5);
+ 139   1          while(1)
+ 140   1          {
+ 141   2              //端口一模拟输入
+ 142   2              current_x10_ma0 = ADC_ReadFilteredCurrentX10Ma(ADC_AIN6);
+ 143   2              if(current_threshold_x10_ma0 == full)
+ 144   2              {
+ 145   3                  confirm_count0 = 0U;
+ 146   3                  /* 正常充电阶段 */
+ 147   3                  if(current_x10_ma0 < full)
+ 148   3                  {
+ 149   4                      /* 充满：亮绿灯并进入钳位状态 */
+ 150   4                      P00 = OUTPUT_LOW;
+ 151   4                      current_threshold_x10_ma0 = limix;
+ 152   4                  }
+ 153   3                  else
+ 154   3                  {
+ 155   4                      /* 电流尚未降到full以下 */
+ 156   4                      P00 = OUTPUT_HIGH;
+ 157   4                  }
+ 158   3              }
+ 159   2              else
+ 160   2              {
+ 161   3                  /* 充满后的钳位阶段 */
+ 162   3                  if(current_x10_ma0 > limix)
+ 163   3                  {
+ 164   4                      confirm_count0++;
+ 165   4                      if(confirm_count0 >= NEW_BATTERY_CONFIRM_COUNT)
+ 166   4                      {
+ 167   5                          /* 检测到新电池：亮红灯并恢复正常判断值 */
+ 168   5                          P00 = OUTPUT_HIGH;
+ 169   5                          current_threshold_x10_ma0 = full;
+ 170   5                          confirm_count0 = 0U;
+ 171   5                      }
+ 172   4                      else
+ 173   4                      {
+ 174   5                          P00 = OUTPUT_LOW;
+ 175   5                      }
+ 176   4                  }
+ 177   3                  else
+ 178   3                  {
+C51 COMPILER V9.60.0.0   MAIN                                                              09/09/2026 14:21:14 PAGE 4   
 
- 179   4                      P00 = OUTPUT_LOW;
- 180   4                      confirm_count0 = 0U;
- 181   4                  }
- 182   3              }
- 183   2      
+ 179   4                      /* 波动未超过钳位值，保持绿灯 */
+ 180   4                      P00 = OUTPUT_LOW;
+ 181   4                      confirm_count0 = 0U;
+ 182   4                  }
+ 183   3              }
  184   2      
- 185   2              //端口二模拟输入
- 186   2              current_x10_ma1 = ADC_ReadFilteredCurrentX10Ma(ADC_AIN5);
- 187   2              if(current_threshold_x10_ma1 == full)
- 188   2              {
- 189   3                  confirm_count1 = 0U;
- 190   3                  /* 正常充电阶段 */
- 191   3                  if(current_x10_ma1 < full)
- 192   3                  {
- 193   4                      /* 充满：亮绿灯并进入钳位状态 */
- 194   4                      P01 = OUTPUT_LOW;
- 195   4                      current_threshold_x10_ma1 = limix;
- 196   4                  }
- 197   3                  else
- 198   3                  {
- 199   4                      /* 电流尚未降到full以下 */
- 200   4                      P01 = OUTPUT_HIGH;
- 201   4                  }
- 202   3              }
- 203   2              else
- 204   2              {
- 205   3                  /* 充满后的钳位阶段 */
- 206   3                  if(current_x10_ma1 > limix)
- 207   3                  {
- 208   4                      confirm_count1++;
- 209   4                      if(confirm_count1 >= NEW_BATTERY_CONFIRM_COUNT)
- 210   4                      {
- 211   5                          /* 检测到新电池：亮红灯并恢复正常判断值 */
- 212   5                          P01 = OUTPUT_HIGH;
- 213   5                          current_threshold_x10_ma1 = full;
- 214   5                          confirm_count1 = 0U;
- 215   5                      }
- 216   4                      else
- 217   4                      {
- 218   5                          P01 = OUTPUT_LOW;
- 219   5                      }
- 220   4                  }
- 221   3                  else
- 222   3                  {
- 223   4                      /* 波动未超过钳位值，保持绿灯 */
- 224   4                      P01 = OUTPUT_LOW;
- 225   4                      confirm_count1 = 0U;
- 226   4                  }
- 227   3              }
- 228   2      
- 229   2              
- 230   2               //端口三模拟输入
- 231   2              /*current_x10_ma2 = ADC_ReadFilteredCurrentX10Ma(ADC_AIN4);
- 232   2              if(sign2==1&&current_x10_ma2<full)
- 233   2              {
- 234   2                  current_threshold_x10_ma2=limix;
- 235   2              }
- 236   2              //退出特殊处理环节
- 237   2              else if(sign2==1&&current_x10_ma2>limix)
- 238   2              {
- 239   2                  current_threshold_x10_ma2=full;
- 240   2              }
-C51 COMPILER V9.60.0.0   MAIN                                                              09/09/2026 08:38:15 PAGE 5   
+ 185   2      
+ 186   2              //端口二模拟输入
+ 187   2              current_x10_ma1 = ADC_ReadFilteredCurrentX10Ma(ADC_AIN5);
+ 188   2              if(current_threshold_x10_ma1 == full)
+ 189   2              {
+ 190   3                  confirm_count1 = 0U;
+ 191   3                  /* 正常充电阶段 */
+ 192   3                  if(current_x10_ma1 < full)
+ 193   3                  {
+ 194   4                      /* 充满：亮绿灯并进入钳位状态 */
+ 195   4                      P01 = OUTPUT_LOW;
+ 196   4                      current_threshold_x10_ma1 = limix;
+ 197   4                  }
+ 198   3                  else
+ 199   3                  {
+ 200   4                      /* 电流尚未降到full以下 */
+ 201   4                      P01 = OUTPUT_HIGH;
+ 202   4                  }
+ 203   3              }
+ 204   2              else
+ 205   2              {
+ 206   3                  /* 充满后的钳位阶段 */
+ 207   3                  if(current_x10_ma1 > limix)
+ 208   3                  {
+ 209   4                      confirm_count1++;
+ 210   4                      if(confirm_count1 >= NEW_BATTERY_CONFIRM_COUNT)
+ 211   4                      {
+ 212   5                          /* 检测到新电池：亮红灯并恢复正常判断值 */
+ 213   5                          P01 = OUTPUT_HIGH;
+ 214   5                          current_threshold_x10_ma1 = full;
+ 215   5                          confirm_count1 = 0U;
+ 216   5                      }
+ 217   4                      else
+ 218   4                      {
+ 219   5                          P01 = OUTPUT_LOW;
+ 220   5                      }
+ 221   4                  }
+ 222   3                  else
+ 223   3                  {
+ 224   4                      /* 波动未超过钳位值，保持绿灯 */
+ 225   4                      P01 = OUTPUT_LOW;
+ 226   4                      confirm_count1 = 0U;
+ 227   4                  }
+ 228   3              }
+ 229   2      
+ 230   2              
+ 231   2               //端口三模拟输入
+ 232   2              /*current_x10_ma2 = ADC_ReadFilteredCurrentX10Ma(ADC_AIN4);
+ 233   2              if(sign2==1&&current_x10_ma2<full)
+ 234   2              {
+ 235   2                  current_threshold_x10_ma2=limix;
+ 236   2              }
+ 237   2              //退出特殊处理环节
+ 238   2              else if(sign2==1&&current_x10_ma2>limix)
+ 239   2              {
+ 240   2                  current_threshold_x10_ma2=full;
+C51 COMPILER V9.60.0.0   MAIN                                                              09/09/2026 14:21:14 PAGE 5   
 
- 241   2              P02 = (current_x10_ma2 > current_threshold_x10_ma2) ? OUTPUT_HIGH : OUTPUT_LOW;
- 242   2              sign2 = (current_x10_ma2 > current_threshold_x10_ma2) ? 1 : 0;*/
- 243   2      
- 244   2              DelaySampleInterval();
- 245   2              // //看门狗复位
- 246   2              // WDT_ClearWDT(); 
- 247   2          }
- 248   1      }
+ 241   2              }
+ 242   2              P02 = (current_x10_ma2 > current_threshold_x10_ma2) ? OUTPUT_HIGH : OUTPUT_LOW;
+ 243   2              sign2 = (current_x10_ma2 > current_threshold_x10_ma2) ? 1 : 0;*/
+ 244   2      
+ 245   2              DelaySampleInterval();
+ 246   2              // 看门狗复位
+ 247   2              //  WDT_ClearWDT(); 
+ 248   2          }
+ 249   1      }
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
@@ -271,7 +272,7 @@ MODULE INFORMATION:   STATIC OVERLAYABLE
    CONSTANT SIZE    =   ----    ----
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----
-   DATA SIZE        =      6      24
+   DATA SIZE        =      4      24
    IDATA SIZE       =   ----    ----
    BIT SIZE         =   ----    ----
    EDATA SIZE       =   ----    ----

@@ -1,4 +1,4 @@
-C51 COMPILER V9.60.0.0   TIMER                                                             09/09/2026 08:38:14 PAGE 1   
+C51 COMPILER V9.60.0.0   TIMER                                                             09/09/2026 14:21:13 PAGE 1   
 
 
 C51 COMPILER V9.60.0.0, COMPILATION OF MODULE TIMER
@@ -62,7 +62,7 @@ line level    source
   50          {
   51   1          TIMER1_TMOD_MODE_SET(u8mode);  /* Mode selection */
   52   1          TIMER1_TMOD_GATE1_SET(u8gate); /* Gate control */
-C51 COMPILER V9.60.0.0   TIMER                                                             09/09/2026 08:38:14 PAGE 2   
+C51 COMPILER V9.60.0.0   TIMER                                                             09/09/2026 14:21:13 PAGE 2   
 
   53   1          TIMER1_TMOD_CNT1_SET(u8cnt);   /* Clock source selection */
   54   1      }
@@ -126,7 +126,7 @@ line level    source
  112           * -# ENABLE_CAP_FILTER: Enable noise filter on the capture channel
  113           */
  114          void TIMER2_ConfigCap3Mode(uint8_t u8trigger, uint8_t u8filter)
-C51 COMPILER V9.60.0.0   TIMER                                                             09/09/2026 08:38:14 PAGE 3   
+C51 COMPILER V9.60.0.0   TIMER                                                             09/09/2026 14:21:13 PAGE 3   
 
  115          {
  116   1          TIMER2_CAPCON1_CAP3LS_SET(u8trigger);

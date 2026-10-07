@@ -1,0 +1,42 @@
+{
+    "configurations": [
+        {
+            "name": "Project",
+            "includePath": [
+                "c:\\Users\\ThinkPadX390\\Desktop\\total_project\\灯控板载三口\\WY8S8002_BSP\\Library\\inc",
+                "D:\\Keil_5\\C51\\INC",
+                "c:\\Users\\ThinkPadX390\\Desktop\\total_project\\灯控板载三口\\WY8S8002_BSP\\Library\\Startup",
+                "c:\\Users\\ThinkPadX390\\Desktop\\total_project\\灯控板载三口\\WY8S8002_BSP\\Library\\src",
+                "c:\\Users\\ThinkPadX390\\Desktop\\total_project\\灯控板载三口\\WY8S8002_BSP\\Common",
+                "c:\\Users\\ThinkPadX390\\Desktop\\total_project\\灯控板载三口\\WY8S8002_BSP\\common",
+                "c:\\Users\\ThinkPadX390\\Desktop\\total_project\\灯控板载三口\\WY8S8002_BSP\\SampleCode\\ADC_CMP\\Source_Code"
+            ],
+            "defines": [
+                "__C51__",
+                "__VSCODE_C51__",
+                "reentrant=",
+                "compact=",
+                "small=",
+                "large=",
+                "data=",
+                "idata=",
+                "pdata=",
+                "bdata=",
+                "xdata=",
+                "code=",
+                "bit=char",
+                "sbit=char",
+                "sfr=char",
+                "sfr16=int",
+                "sfr32=int",
+                "interrupt=",
+                "using=",
+                "_at_=",
+                "_priority_=",
+                "_task_="
+            ],
+            "intelliSenseMode": "${default}"
+        }
+    ],
+    "version": 4
+}

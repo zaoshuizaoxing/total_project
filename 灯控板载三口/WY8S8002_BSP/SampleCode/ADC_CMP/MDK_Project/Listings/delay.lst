@@ -1,0 +1,61 @@
+C51 COMPILER V9.60.0.0   DELAY                                                             09/21/2026 16:43:49 PAGE 1   
+
+
+C51 COMPILER V9.60.0.0, COMPILATION OF MODULE DELAY
+OBJECT MODULE PLACED IN .\Objects\delay.obj
+COMPILER INVOKED BY: D:\Keil_5\C51\BIN\C51.EXE ..\..\..\common\delay.c OMF2 OPTIMIZE(8,SPEED) BROWSE INCDIR(..\..\..\Lib
+                    -rary\inc) DEBUG PRINT(.\Listings\delay.lst) TABS(2) OBJECT(.\Objects\delay.obj)
+
+line level    source
+
+   1          /**
+   2           * @file      delay.c
+   3           * @brief     Precise delay functions
+   4           * @author    Software Team
+   5           * @date      2023-07
+   6           * @version   V1.0.0
+   7           * @copyright WAYON
+   8           */
+   9          
+  10          #include "common.h"
+  11          #include "delay.h"
+  12          #include "timer.h"
+  13          
+  14          /**定时器0延时函数
+  15           * Generate a 1ms delay using Timer0
+  16           * @param[in] u8Xms: Delay time in milliseconds (ms)
+  17           * @note The parameter is of type uint8_t, thus the maximum support is a 255ms delay
+  18           */
+  19          void Timer0_Delay_ms(uint8_t u8Xms)
+  20          {
+  21   1          TIMER0_TMOD_MODE_SET(TIMER01_MODE1);
+  22   1          ENABLE_TIMER0;
+  23   1          while(u8Xms != 0) /* One loop equals 1ms */
+  24   1          {
+  25   2              TH0 = 0xE0;
+  26   2              TL0 = 0xC0;
+  27   2              while(IS_TIME0_OVER_FLAG != 1)
+  28   2                  ;
+  29   2              CLR_TIME0_OVER_FLAG;
+  30   2              u8Xms--;
+  31   2          }
+  32   1          DISABLE_TIMER0;
+  33   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     30    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+   EDATA SIZE       =   ----    ----
+   HDATA SIZE       =   ----    ----
+   XDATA CONST SIZE =   ----    ----
+   FAR CONST SIZE   =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

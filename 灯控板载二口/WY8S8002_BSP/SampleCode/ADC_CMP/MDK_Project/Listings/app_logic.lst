@@ -1,0 +1,198 @@
+C51 COMPILER V9.60.0.0   APP_LOGIC                                                         08/25/2026 17:28:07 PAGE 1   
+
+
+C51 COMPILER V9.60.0.0, COMPILATION OF MODULE APP_LOGIC
+OBJECT MODULE PLACED IN .\Objects\app_logic.obj
+COMPILER INVOKED BY: D:\Keil_5\C51\BIN\C51.EXE ..\Source_Code\app_logic.c OMF2 OPTIMIZE(8,SPEED) BROWSE INCDIR(..\..\..\
+                    -Library\inc) DEBUG PRINT(.\Listings\app_logic.lst) TABS(2) OBJECT(.\Objects\app_logic.obj)
+
+line level    source
+
+   1          #include "app_logic.h"
+   2          
+   3          #include "board_config.h"
+   4          #include "key_input.h"
+   5          #include "telemetry_protocol.h"
+   6          
+   7          #define APP_DISPLAY_PERIOD_MS    (300U)
+   8          #define APP_DISPLAY_MAX_VALUE    (65535UL)
+   9          #define APP_DISPLAY_CURRENT_STEP_MA (100UL)
+  10          
+  11          App_State_t xdata g_app;
+  12          //硬件板载初始化
+  13          void App_Init(void)
+  14          {
+  15   1          uint8_t i;
+  16   1      
+  17   1          g_app.backlight_on = 1;
+  18   1          TelemetryProtocol_Init();
+  19   1      
+  20   1          for(i = 0; i < ADC_SAMPLE_CHANNEL_COUNT; i++)
+  21   1          {
+  22   2              g_app.adc_raw[i] = 0;
+  23   2              g_app.adc_mv[i] = 0;
+  24   2          }
+  25   1      
+  26   1          for(i = 0; i < TM1622_CH_COUNT; i++)
+  27   1          {
+  28   2              g_app.display_ch[i].cur = 0;
+  29   2              g_app.display_ch[i].vol = 0;
+  30   2              g_app.display_ch[i].powr = 0;
+  31   2              g_app.display_ch[i].active = 0;
+  32   2          }
+  33   1      
+  34   1          for(i = 0; i < APP_MEASUREMENT_COUNT; i++)
+  35   1          {
+  36   2              g_app.measurement[i].voltage_mv = 0;
+  37   2              g_app.measurement[i].current_ma = 0;
+  38   2              g_app.measurement[i].power_mw = 0;
+  39   2              g_app.measurement[i].connected = 0;
+  40   2          }
+  41   1      
+  42   1          for(i = 0; i < 2U; i++)
+  43   1          {
+  44   2              g_app.adc_pair[i].voltage_mv = 0;
+  45   2              g_app.adc_pair[i].current_ma = 0;
+  46   2          }
+  47   1      
+  48   1          TM1622_Clear();
+  49   1      }
+  50          //应用层任务函数
+  51          void App_Task(void)
+  52          {
+  53   1          uint8_t i;
+  54   1          uint8_t display_index;
+C51 COMPILER V9.60.0.0   APP_LOGIC                                                         08/25/2026 17:28:07 PAGE 2   
+
+  55   1          uint16_t now;
+  56   1          static uint16_t last_display_ms;
+  57   1          Telemetry_Measurement_t telemetry_measurement;
+  58   1          //获取adc原始数据
+  59   1          for(i = 0; i < ADC_SAMPLE_CHANNEL_COUNT; i++)
+  60   1          {
+  61   2              g_app.adc_raw[i] = AdcSample_GetRaw(i);
+  62   2              g_app.adc_mv[i] = AdcSample_GetMv(i);
+  63   2          }
+  64   1          //获取adc采样转换数据
+  65   1          g_app.adc_pair[ADC_SAMPLE_WIRELESS_INDEX].voltage_mv = AdcSample_GetVoltageMv(ADC_SAMPLE_WIRELESS_INDE
+             -X);
+  66   1          g_app.adc_pair[ADC_SAMPLE_WIRELESS_INDEX].current_ma = AdcSample_GetCurrentMa(ADC_SAMPLE_WIRELESS_INDE
+             -X);
+  67   1          g_app.adc_pair[ADC_SAMPLE_WIRED_INDEX].voltage_mv = AdcSample_GetVoltageMv(ADC_SAMPLE_WIRED_INDEX);
+  68   1          g_app.adc_pair[ADC_SAMPLE_WIRED_INDEX].current_ma = AdcSample_GetCurrentMa(ADC_SAMPLE_WIRED_INDEX);
+  69   1          //获取遥测数据，并更新到显示数组
+  70   1          for(i = 0; i < TELEMETRY_CHANNEL_COUNT; i++)
+  71   1          {
+  72   2              TelemetryProtocol_GetMeasurement(i, &telemetry_measurement);
+  73   2              if(telemetry_measurement.voltage_mv>10000&&((telemetry_measurement.voltage_mv/100%10)>=5))
+  74   2              {
+  75   3                  g_app.measurement[i].voltage_mv=(telemetry_measurement.voltage_mv/1000+1)*1000;
+  76   3              }
+  77   2              else
+  78   2              {
+  79   3                   g_app.measurement[i].voltage_mv = telemetry_measurement.voltage_mv;
+  80   3              }
+  81   2              if((telemetry_measurement.current_ma/10%10)>=5)
+  82   2              {
+  83   3                   g_app.measurement[i].current_ma = (telemetry_measurement.current_ma/100+1)*100; 
+  84   3              }
+  85   2               else
+  86   2              {
+  87   3                  g_app.measurement[i].current_ma = telemetry_measurement.current_ma;
+  88   3              }
+  89   2              g_app.measurement[i].connected = telemetry_measurement.connected;
+  90   2          } 
+  91   1          //更新adc采样数据到数组中
+  92   1          if(g_app.adc_pair[ADC_SAMPLE_WIRED_INDEX].voltage_mv>10000&&((g_app.adc_pair[ADC_SAMPLE_WIRED_INDEX].v
+             -oltage_mv/100%10)>=5))
+  93   1          {
+  94   2              g_app.measurement[4].voltage_mv=(g_app.adc_pair[ADC_SAMPLE_WIRED_INDEX].voltage_mv/1000+1)*1000;
+  95   2          }
+  96   1          else
+  97   1          { 
+  98   2              g_app.measurement[4].voltage_mv = g_app.adc_pair[ADC_SAMPLE_WIRED_INDEX].voltage_mv;
+  99   2          }
+ 100   1          if((g_app.adc_pair[ADC_SAMPLE_WIRED_INDEX].current_ma/10%10)>=5)
+ 101   1          {
+ 102   2              g_app.measurement[4].current_ma = (g_app.adc_pair[ADC_SAMPLE_WIRED_INDEX].current_ma/100+1)*100; 
+ 103   2          }
+ 104   1           else
+ 105   1          {
+ 106   2              g_app.measurement[4].current_ma = g_app.adc_pair[ADC_SAMPLE_WIRED_INDEX].current_ma;
+ 107   2          }
+ 108   1          g_app.measurement[4].connected = 1;
+ 109   1          //处理数据并更新到显存之中
+ 110   1          for(i = 0; i < APP_MEASUREMENT_COUNT; i++)
+ 111   1          {
+ 112   2              display_index = (APP_MEASUREMENT_COUNT - 1U) - i;
+ 113   2              g_app.measurement[i].power_mw = ((uint32_t)g_app.measurement[i].voltage_mv
+C51 COMPILER V9.60.0.0   APP_LOGIC                                                         08/25/2026 17:28:07 PAGE 3   
+
+ 114   2                                               * g_app.measurement[i].current_ma) / 1000UL;
+ 115   2              if((g_app.measurement[i].current_ma / APP_DISPLAY_CURRENT_STEP_MA)
+ 116   2                 > APP_DISPLAY_MAX_VALUE)
+ 117   2              {
+ 118   3                  g_app.display_ch[display_index].cur = (uint16_t)APP_DISPLAY_MAX_VALUE;
+ 119   3              }
+ 120   2              else
+ 121   2              {
+ 122   3                  g_app.display_ch[display_index].cur
+ 123   3                      = (uint16_t)(g_app.measurement[i].current_ma
+ 124   3                                   / APP_DISPLAY_CURRENT_STEP_MA);
+ 125   3              }
+ 126   2              if(g_app.measurement[i].current_ma < 50)
+ 127   2              {
+ 128   3                  g_app.display_ch[display_index].vol = 0;
+ 129   3                  g_app.display_ch[display_index].powr = 0;
+ 130   3              }
+ 131   2              else
+ 132   2              {
+ 133   3                  g_app.display_ch[display_index].vol
+ 134   3                      = g_app.measurement[i].voltage_mv / 100U;
+ 135   3                  if((g_app.measurement[i].power_mw / 100UL) > APP_DISPLAY_MAX_VALUE)
+ 136   3                  {
+ 137   4                      g_app.display_ch[display_index].powr
+ 138   4                          = (uint16_t)APP_DISPLAY_MAX_VALUE;
+ 139   4                  }
+ 140   3                  else
+ 141   3                  {
+ 142   4                      g_app.display_ch[display_index].powr
+ 143   4                          = (uint16_t)(g_app.measurement[i].power_mw / 100UL);
+ 144   4                  }
+ 145   3              }
+ 146   2              g_app.display_ch[display_index].active = g_app.measurement[i].connected;
+ 147   2          }
+ 148   1          //检测按键事件，切换背光状态
+ 149   1          if(KeyInput_GetPressEvent() != 0)
+ 150   1          {
+ 151   2              g_app.backlight_on = (g_app.backlight_on == 0) ? 1 : 0;
+ 152   2          }
+ 153   1          Board_BacklightSet(g_app.backlight_on);
+ 154   1      
+ 155   1          now = KeyInput_GetMilliseconds();
+ 156   1          if((uint16_t)(now - last_display_ms) >= APP_DISPLAY_PERIOD_MS)
+ 157   1          {
+ 158   2              last_display_ms = now;
+ 159   2              TM1622_UpdateAll(g_app.display_ch);
+ 160   2          }
+ 161   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =   1373    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =    105    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      2       7
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+   EDATA SIZE       =   ----    ----
+   HDATA SIZE       =   ----    ----
+   XDATA CONST SIZE =   ----    ----
+   FAR CONST SIZE   =   ----    ----
+C51 COMPILER V9.60.0.0   APP_LOGIC                                                         08/25/2026 17:28:07 PAGE 4   
+
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

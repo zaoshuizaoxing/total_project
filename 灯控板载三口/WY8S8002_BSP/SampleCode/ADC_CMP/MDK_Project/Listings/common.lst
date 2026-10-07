@@ -1,0 +1,212 @@
+C51 COMPILER V9.60.0.0   COMMON                                                            09/21/2026 16:43:49 PAGE 1   
+
+
+C51 COMPILER V9.60.0.0, COMPILATION OF MODULE COMMON
+OBJECT MODULE PLACED IN .\Objects\common.obj
+COMPILER INVOKED BY: D:\Keil_5\C51\BIN\C51.EXE ..\..\..\Common\common.c OMF2 OPTIMIZE(8,SPEED) BROWSE INCDIR(..\..\..\Li
+                    -brary\inc) DEBUG PRINT(.\Listings\common.lst) TABS(2) OBJECT(.\Objects\common.obj)
+
+line level    source
+
+   1          /**
+   2           * @file      common.c
+   3           * @brief     Common utility functions
+   4           * @author    Software Team
+   5           * @date      2025-04
+   6           * @version   V1.0.0
+   7           * @copyright WAYON
+   8           */
+   9          
+  10          #include "common.h"
+  11          #include "wdt.h"
+  12          uint32_t g_u32SystemClock = HRC_VALUE; /*!< Global variable for system clock */
+  13          /**
+  14           * Configure system clock
+  15           * @param[in] u8clkSel Clock source selection
+  16           * -# SYSCLK_HRC
+  17           * -# SYSCLK_LRC
+  18           * -# SYSCLK_OSC
+  19           * @param[in] u8divSel Clock division coefficient
+  20           * -# CLK_DIV_NOT
+  21           * -# CLK_DIV_2
+  22           * -# CLK_DIV_4
+  23           * -# CLK_DIV_8
+  24           * -# CLK_DIV_16
+  25           * -# CLK_DIV_32
+  26           * -# CLK_DIV_64
+  27           * -# CLK_DIV_128
+  28           * @param[in] u8waits Flash access wait cycles
+  29           * -# VDD >= 3.6V
+  30           * -# WAITS_INST_VDD_GE3600MV_CLK_LT10M         Configuration for main frequency < 10MHz
+  31           * -# WAITS_INST_VDD_GE3600MV_CLK_GE10_LT20M    Configuration for main frequency >= 10 and < 20MHz 
+  32           * -# WAITS_INST_VDD_GE3600MV_CLK_GE20_LT30M    Configuration for main frequency >= 20 and < 30MHz 
+  33           * -# WAITS_INST_VDD_GE3600MV_CLK_GE30_LT32M    Configuration for main frequency >= 30 and =< 32MHz 
+  34           * -# VDD < 3.6V
+  35           * -# WAITS_INST_VDD_LT3600MV_CLK_LT5M          Configuration for main frequency < 5MHz 
+  36           * -# WAITS_INST_VDD_LT3600MV_CLK_GE5_LT10M     Configuration for main frequency >= 5 and < 10MHz 
+  37           * -# WAITS_INST_VDD_LT3600MV_CLK_GE10_LT15M    Configuration for main frequency >= 10 and < 15MHz 
+  38           * -# WAITS_INST_VDD_LT3600MV_CLK_GE15_LT20M    Configuration for main frequency >= 15 and < 20MHz
+  39           * -# WAITS_INST_VDD_LT3600MV_CLK_GE20_LT25M    Configuration for main frequency >= 20 and < 25MHz  
+  40           * -# WAITS_INST_VDD_LT3600MV_CLK_GE25_LT30M    Configuration for main frequency >= 25 and < 30MHz 
+  41           * -# WAITS_INST_VDD_LT3600MV_CLK_GE30_LT32M    Configuration for main frequency >= 30 and =< 32MHz  
+  42           *
+  43           * @note When u8divSel = 0, CLK_sys is the clock source frequency
+  44           * @note When u8divSel != 0, CLK_sys = clock source frequency / (2 * u8divSel)
+  45           * @note If CLKSEL_OSC mode is selected, you need to change the external clock frequency in OSC_VALUE
+  46           * @note If switching from a high frequency to a lower one, configure CLKCON before WAITSTS; if from low t
+             -o high,
+  47           * configure WAITSTS before CLKCON
+  48           */
+  49          void System_ConfigCLK(sysclk_t u8clkSel, uint8_t u8divSel, uint8_t u8waits)
+  50          {
+  51   1      
+  52   1          if(u8waits > GET_SYS_CLK_WAITS)
+  53   1          {
+C51 COMPILER V9.60.0.0   COMMON                                                            09/21/2026 16:43:49 PAGE 2   
+
+  54   2              SYS_CLK_WAITS(u8waits);
+  55   2          }
+  56   1      
+  57   1          switch(u8clkSel)
+  58   1          {
+  59   2              case SYSCLK_HRC:
+  60   2                  SYS_CLK_SEL(CLKSEL_HRC);
+  61   2                  DISABLE_HSE_CLK;
+  62   2                  g_u32SystemClock = HRC_VALUE;
+  63   2                  break;
+  64   2              case SYSCLK_LRC:
+  65   2                  SYS_CLK_SEL(CLKSEL_LRC);
+  66   2                  g_u32SystemClock = LRC_VALUE;
+  67   2                  break;
+  68   2              case SYSCLK_OSC:
+  69   2                  ENABLE_HSE_CLK;
+  70   2                  SYS_CLK_SEL(CLKSEL_OSC);
+  71   2                  g_u32SystemClock = OSC_VALUE;
+  72   2                  break;
+  73   2          }
+  74   1      
+  75   1          SYS_CLK_DIV(u8divSel); /* Configure the division coefficient */
+  76   1      
+  77   1          if(u8waits < GET_SYS_CLK_WAITS)
+  78   1          {
+  79   2              SYS_CLK_WAITS(u8waits);
+  80   2          }
+  81   1      
+  82   1          g_u32SystemClock >>= u8divSel; /* Update g_u32SystemClock */
+  83   1      }
+  84          
+  85          /**
+  86          * Enter standby
+  87          * @return 0:Fail to enter 1:Success to enter
+  88          * @note Enter standby mode when PCON.SYSD is 1.
+  89          */ 
+  90          uint8_t System_EnterStandby(void)
+  91          {
+  92   1          if(0x00 == IS_SYSD_FLAG)
+  93   1          {
+  94   2              return 0;
+  95   2          }
+  96   1          _nop_();
+  97   1          PCON |= BIT4;
+  98   1          _nop_();
+  99   1          _nop_();
+ 100   1          _nop_();
+ 101   1          return 1;
+ 102   1      }
+ 103          
+ 104          /**
+ 105           * Enter sleep mode
+ 106           * @return 0: Failure, 1: Success
+ 107           * @note Sleep mode can only be entered when PCON.SYSD is set to 1
+ 108           */
+ 109          uint8_t System_EnterSleep(void)
+ 110          {
+ 111   1          WAITING_WDT_WDTCLR();
+ 112   1          if(0x00 == IS_SYSD_FLAG)
+ 113   1          {
+ 114   2              return 0;
+ 115   2          }
+C51 COMPILER V9.60.0.0   COMMON                                                            09/21/2026 16:43:49 PAGE 3   
+
+ 116   1          _nop_();
+ 117   1          PCON |= BIT1;
+ 118   1          _nop_();
+ 119   1          _nop_();
+ 120   1          _nop_();
+ 121   1          return 1;
+ 122   1      }
+ 123          
+ 124          /**
+ 125           * Enter idle mode
+ 126           */
+ 127          void System_EnterIdle(void)
+ 128          {
+ 129   1          _nop_();
+ 130   1          PCON |= BIT0;
+ 131   1          _nop_();
+ 132   1      }
+ 133          
+ 134          /**
+ 135           * Software reset
+ 136           */
+ 137          uint8_t System_SoftReset(void)
+ 138          {
+ 139   1          if(0x00 == IS_SYSD_FLAG)
+ 140   1          {
+ 141   2              return 0;
+ 142   2          }
+ 143   1          SYSRST |= BIT1;
+ 144   1      
+ 145   1          return 1;
+ 146   1      }
+ 147          
+ 148          /**
+ 149           * Fine-Tuning of HRC
+ 150           * @param[in] dir:
+ 151           * -# DIR_FREQ_UP: Fine-Tuning HRC frequency up
+ 152           * -# DIR_FREQ_DOWM: Fine-Tuning HRC frequency dowm
+ 153           * @param[in] step: Fine-Tuning step size
+ 154           * @not step range:0-1023
+ 155           * @return 0: Failure, 1: Success
+ 156           */
+ 157          uint8_t HRC_FineTuning(uint8_t dir, uint16_t step)
+ 158          {
+ 159   1        uint16_t fine_tune =  HRCFTUNE16 & 0x03FF;
+ 160   1        
+ 161   1        if(dir == DIR_FREQ_UP){ 
+ 162   2          fine_tune += step; 
+ 163   2          if(fine_tune > 0x03FF){
+ 164   3            return 0;
+ 165   3          }else{
+ 166   3            HRCFTUNE16 = (HRCFTUNE16 & 0xFC00) | fine_tune;
+ 167   3          }
+ 168   2        }else{ 
+ 169   2          if(fine_tune < step){
+ 170   3            return 0;
+ 171   3          }else{
+ 172   3            fine_tune -= step; 
+ 173   3            HRCFTUNE16 = (HRCFTUNE16 & 0xFC00) | fine_tune;
+ 174   3          }
+ 175   2        }
+ 176   1        return 1;
+ 177   1      }
+C51 COMPILER V9.60.0.0   COMMON                                                            09/21/2026 16:43:49 PAGE 4   
+
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    316    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      4    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+   EDATA SIZE       =   ----    ----
+   HDATA SIZE       =   ----    ----
+   XDATA CONST SIZE =   ----    ----
+   FAR CONST SIZE   =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

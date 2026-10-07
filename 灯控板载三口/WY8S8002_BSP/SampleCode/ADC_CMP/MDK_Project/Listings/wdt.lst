@@ -1,0 +1,102 @@
+C51 COMPILER V9.60.0.0   WDT                                                               09/21/2026 16:43:48 PAGE 1   
+
+
+C51 COMPILER V9.60.0.0, COMPILATION OF MODULE WDT
+OBJECT MODULE PLACED IN .\Objects\wdt.obj
+COMPILER INVOKED BY: D:\Keil_5\C51\BIN\C51.EXE ..\..\..\Library\src\wdt.c OMF2 OPTIMIZE(8,SPEED) BROWSE INCDIR(..\..\..\
+                    -Library\inc) DEBUG PRINT(.\Listings\wdt.lst) TABS(2) OBJECT(.\Objects\wdt.obj)
+
+line level    source
+
+   1          /**
+   2           * @file      wdt.c
+   3           * @brief     WDT Driver
+   4           * @author    Software Team
+   5           * @date      2023-07
+   6           * @version   V1.0.0
+   7           * @copyright WAYON
+   8           */
+   9          
+  10          #include "common.h"
+  11          #include "wdt.h"
+  12          
+  13          /**
+  14           * Initializes WDT configuration
+  15           * @param[in] u8div  WDT overflow duration
+  16           * -# WDT_DIV_2     WDT clock divided by 2
+  17           * -# WDT_DIV_4     WDT clock divided by 4
+  18           * -# WDT_DIV_8     WDT clock divided by 8
+  19           * -# WDT_DIV_16    WDT clock divided by 16
+  20           * -# WDT_DIV_32    WDT clock divided by 32
+  21           * -# WDT_DIV_64    WDT clock divided by 64
+  22           * -# WDT_DIV_128   WDT clock divided by 128
+  23           * -# WDT_DIV_256   WDT clock divided by 256
+  24           * -# WDT_DIV_512   WDT clock divided by 512
+  25           * -# WDT_DIV_1024  WDT clock divided by 1024
+  26           * @param[in] u8overRstFlag Overflow reset control
+  27           * -# DISABLE_OVER_RST: Disable reset on overflow
+  28           * -# ENABLE_OVER_RST: Enable reset on overflow
+  29           * @param[in] u8Mode WDT operating mode configuration
+  30           * -# WDT_IDLE_SLEEP_MODE    WDT runs in both Idle and Sleep modes
+  31           * -# WDT_IDLE_MODE          WDT runs in Idle mode, stops in Sleep mode
+  32           * -# WDT_NONE_MODE          WDT stops in both Idle and Sleep modes
+  33           */
+  34          void WDT_ConfigMode(uint8_t u8div, uint8_t u8overRstFlag, uint8_t u8Mode)
+  35          {
+  36   1          WDT_WDTCON_PSDIV_SET(u8div); /* Configure overflow time */
+  37   1          WDT_WDTMOD_WDTRST_SET(u8overRstFlag); /* Configure overflow reset control */
+  38   1          WDT_WDTMOD_WDTMOD_SET(u8Mode); /* Configure WDT operating mode */
+  39   1      }
+  40          
+  41          /**
+  42           * Enables or disables WDT
+  43           * @param[in] u8WDTFlag
+  44           * -# DISABLE_WDT: Disable WDT operation
+  45           * -# ENABLE_WDT: Enable WDT operation
+  46           */
+  47          void WDT_Run(uint8_t u8WDTFlag)
+  48          {
+  49   1          WDT_WDTCON_WDTEN_SET(u8WDTFlag);
+  50   1      }
+  51          
+  52          /**
+  53           * Clears WDT counter
+  54           * @note Protected by TA sequence
+C51 COMPILER V9.60.0.0   WDT                                                               09/21/2026 16:43:48 PAGE 2   
+
+  55           * @note After clearing the watchdog counter, you need to wait for the watchdog timer to reset
+  56           */
+  57          void WDT_ClearWDT(void)
+  58          {   
+  59   1        if(GET_WDT_WDTCLR_STATUS() == WDT_WDTCLRED)
+  60   1        {
+  61   2          WDTCON &= ~WDT_WDTCON_WDTCLR;
+  62   2        }
+  63   1      }
+  64          
+  65          /**
+  66           * Clears WDT timeout flag
+  67           * @note Protected by TA sequence
+  68           */
+  69          void WDT_ClearTF(void)
+  70          {
+  71   1          WDTCON &= ~BIT5;
+  72   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     68    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+   EDATA SIZE       =   ----    ----
+   HDATA SIZE       =   ----    ----
+   XDATA CONST SIZE =   ----    ----
+   FAR CONST SIZE   =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

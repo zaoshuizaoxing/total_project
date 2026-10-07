@@ -1,0 +1,128 @@
+C51 COMPILER V9.60.0.0   KEY_INPUT                                                         08/25/2026 17:28:07 PAGE 1   
+
+
+C51 COMPILER V9.60.0.0, COMPILATION OF MODULE KEY_INPUT
+OBJECT MODULE PLACED IN .\Objects\key_input.obj
+COMPILER INVOKED BY: D:\Keil_5\C51\BIN\C51.EXE ..\Source_Code\key_input.c OMF2 OPTIMIZE(8,SPEED) BROWSE INCDIR(..\..\..\
+                    -Library\inc) DEBUG PRINT(.\Listings\key_input.lst) TABS(2) OBJECT(.\Objects\key_input.obj)
+
+line level    source
+
+   1          #include "key_input.h"
+   2          
+   3          #include "gpio.h"
+   4          #include "timer.h"
+   5          
+   6          #define KEY_DEBOUNCE_MS        (20U)
+   7          #define KEY_TIMER3_DIV          (TIMER3_DIV_2)
+   8          #define KEY_TIMER3_DIV_VALUE    (2UL)
+   9          #define KEY_TIMER3_PERIOD_MS    (1UL)
+  10          
+  11          static volatile uint16_t s_milliseconds;
+  12          static volatile uint8_t s_debounce_ms;
+  13          static volatile uint8_t s_debounce_ready;
+  14          static uint8_t s_press_event;
+  15          
+  16          void KeyInput_Init(void)
+  17          {
+  18   1          uint32_t timer_ticks;
+  19   1          uint16_t reload_value;
+  20   1      
+  21   1          PORT_SET_MUX(PIO17CFG, GPIO_MUX_MODE);
+  22   1          GPIO1_ConfigInput(GPIO_PIN_7, GPIO_PULLUP);
+  23   1          GPIO1_ConfigINT(GPIO_PIN_7, GPIO_INT_FALLING);
+  24   1          CLR_GPIO1_FLAG(GPIO_PIN_7);
+  25   1      
+  26   1          timer_ticks = (g_u32SystemClock / KEY_TIMER3_DIV_VALUE) / (1000UL / KEY_TIMER3_PERIOD_MS);
+  27   1          reload_value = (uint16_t)(65536UL - timer_ticks);
+  28   1          DISABLE_TIMER3;
+  29   1          TIMER3_T3CON_DIV_SET(KEY_TIMER3_DIV);
+  30   1          TIMER3_DATA_REG((reload_value >> 8) & 0xFF, reload_value & 0xFF);
+  31   1          T3CON &= ~(1 << 7);
+  32   1          TIMER3_PRIORITY_L;
+  33   1          ENABLE_TIME3_INT;
+  34   1          ENABLE_TIMER3;
+  35   1          ENABLE_GPIO_INT;
+  36   1          ENABLE_ALL_INT;
+  37   1      
+  38   1          s_milliseconds = 0;
+  39   1          s_debounce_ms = 0;
+  40   1          s_debounce_ready = 0;
+  41   1          s_press_event = 0;
+  42   1      }
+  43          void KeyInput_OnFallingEdge(void)
+  44          {
+  45   1          if(s_debounce_ms == 0)
+  46   1          {
+  47   2              s_debounce_ms = KEY_DEBOUNCE_MS;
+  48   2              s_debounce_ready = 0;
+  49   2          }
+  50   1      }
+  51          
+  52          void KeyInput_Task(void)
+  53          {
+  54   1          if(s_debounce_ready != 0)
+C51 COMPILER V9.60.0.0   KEY_INPUT                                                         08/25/2026 17:28:07 PAGE 2   
+
+  55   1          {
+  56   2              s_debounce_ready = 0;
+  57   2              if(P17 == 0)
+  58   2              {
+  59   3                  s_press_event = 1;
+  60   3              }
+  61   2          }
+  62   1      }
+  63          
+  64          uint8_t KeyInput_GetPressEvent(void)
+  65          {
+  66   1          uint8_t event;
+  67   1      
+  68   1          event = s_press_event;
+  69   1          s_press_event = 0;
+  70   1          return event;
+  71   1      }
+  72          
+  73          uint16_t KeyInput_GetMilliseconds(void)
+  74          {
+  75   1          uint8_t interrupt_enabled;
+  76   1          uint16_t milliseconds;
+  77   1      
+  78   1          interrupt_enabled = EA;
+  79   1          DISABLE_ALL_INT;
+  80   1          milliseconds = s_milliseconds;
+  81   1          EA = interrupt_enabled;
+  82   1          return milliseconds;
+  83   1      }
+  84          
+  85          static void _TIMER3_IRQHandler(void) interrupt TIMER3_VECTOR
+  86          {
+  87   1          T3CON &= ~(1 << 7);  /* 清除 TF3 溢出标志，否则中断会立即重新触发导致系统卡死 
+             -*/
+  88   1          s_milliseconds++;
+  89   1          if(s_debounce_ms != 0)
+  90   1          {
+  91   2              s_debounce_ms--;
+  92   2              if(s_debounce_ms == 0)
+  93   2              {
+  94   3                  s_debounce_ready = 1;
+  95   3              }
+  96   2          }
+  97   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    213    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      5       4
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+   EDATA SIZE       =   ----    ----
+   HDATA SIZE       =   ----    ----
+   XDATA CONST SIZE =   ----    ----
+   FAR CONST SIZE   =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

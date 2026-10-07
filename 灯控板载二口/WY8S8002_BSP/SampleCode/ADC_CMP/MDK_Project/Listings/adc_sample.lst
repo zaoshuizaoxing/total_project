@@ -1,0 +1,103 @@
+C51 COMPILER V9.60.0.0   ADC_SAMPLE                                                        09/03/2026 16:58:09 PAGE 1   
+
+
+C51 COMPILER V9.60.0.0, COMPILATION OF MODULE ADC_SAMPLE
+OBJECT MODULE PLACED IN .\Objects\adc_sample.obj
+COMPILER INVOKED BY: D:\Keil_5\C51\BIN\C51.EXE ..\Source_Code\adc_sample.c OMF2 OPTIMIZE(8,SPEED) BROWSE INCDIR(..\..\..
+                    -\Library\inc) DEBUG PRINT(.\Listings\adc_sample.lst) TABS(2) OBJECT(.\Objects\adc_sample.obj)
+
+line level    source
+
+   1          #include "adc_sample.h"
+   2          #include "adc.h"
+   3          #include "delay.h"
+   4          static uint8_t  s_sample_index;
+   5          static uint16_t xdata s_adc_raw[ADC_SAMPLE_CHANNEL_COUNT];
+   6          static uint16_t xdata s_adc_mv[ADC_SAMPLE_CHANNEL_COUNT];
+   7          static const uint8_t code s_adc_channels[ADC_SAMPLE_CHANNEL_COUNT] = {
+   8              ADC_AIN7, /* P02 */
+   9              ADC_AIN6, /* P03 */
+  10              ADC_AIN5, /* P04 */
+  11              ADC_AIN4  /* P05 */
+  12          };
+  13          void AdcSample_Init(void)
+  14          {
+  15   1          uint8_t i;
+  16   1          s_sample_index = 0;
+  17   1          for(i = 0; i < ADC_SAMPLE_CHANNEL_COUNT; i++)
+  18   1          {
+  19   2              s_adc_raw[i] = 0;
+  20   2              s_adc_mv[i] = 0;
+  21   2              ADC_ConfigChannel(s_adc_channels[i], ADC_DIV_4);
+  22   2          }
+  23   1          ADC_SMP_SEL(ADC_CLKP_8);
+  24   1          ADC_ConfigSWCVT();
+  25   1          ENABLE_ADC;
+  26   1          Timer0_Delay_ms(1);
+  27   1      }
+  28          void AdcSample_Task(void)
+  29          {
+  30   1          uint16_t raw;
+  31   1          ADC_ConfigChannel(s_adc_channels[s_sample_index], ADC_DIV_4);
+  32   1          ADC_StartSWCVT();
+  33   1          raw = ADC_GetResultQueryMode();
+  34   1          s_adc_raw[s_sample_index] = raw;
+  35   1          s_adc_mv[s_sample_index] = (uint16_t)(((uint32_t)raw * BOARD_ADC_REF_MV) / 4095UL);
+*** ERROR C202 IN LINE 35 OF ..\Source_Code\adc_sample.c: 'BOARD_ADC_REF_MV': undefined identifier
+  36   1      
+  37   1          s_sample_index++;
+  38   1          if(s_sample_index >= ADC_SAMPLE_CHANNEL_COUNT)
+  39   1          {
+  40   2              s_sample_index = 0;
+  41   2          }
+  42   1      }
+  43          uint16_t AdcSample_GetRaw(uint8_t index)
+  44          {
+  45   1          if(index >= ADC_SAMPLE_CHANNEL_COUNT)
+  46   1          {
+  47   2              return 0;
+  48   2          }
+  49   1          return s_adc_raw[index];
+  50   1      }
+  51          uint16_t AdcSample_GetMv(uint8_t index)
+  52          {
+  53   1          if(index >= ADC_SAMPLE_CHANNEL_COUNT)
+C51 COMPILER V9.60.0.0   ADC_SAMPLE                                                        09/03/2026 16:58:09 PAGE 2   
+
+  54   1          {
+  55   2              return 0;
+  56   2          }
+  57   1          return s_adc_mv[index];
+  58   1      }
+  59          
+  60          uint16_t AdcSample_GetVoltageMv(uint8_t pair_index)
+  61          {
+  62   1          uint32_t voltage_mv;
+  63   1      
+  64   1          if(pair_index > ADC_SAMPLE_WIRED_INDEX)
+  65   1          {
+  66   2              return 0;
+  67   2          }
+  68   1      
+  69   1          voltage_mv = (uint32_t)s_adc_mv[pair_index] * ADC_SAMPLE_VOLTAGE_SCALE;
+  70   1          if(voltage_mv > 65535UL)
+  71   1          {
+  72   2              return 65535U;
+  73   2          }
+  74   1          return (uint16_t)voltage_mv;
+  75   1      }
+  76          
+  77          uint32_t AdcSample_GetCurrentMa(uint8_t pair_index)
+  78          {
+  79   1          uint8_t channel_index;
+  80   1      
+  81   1          if(pair_index > ADC_SAMPLE_WIRED_INDEX)
+  82   1          {
+  83   2              return 0;
+  84   2          }
+  85   1      
+  86   1          channel_index = (uint8_t)(pair_index + 2U);
+  87   1          return ((uint32_t)s_adc_mv[channel_index] * 1000UL) / ADC_SAMPLE_SHUNT_MOHM;
+  88   1      }
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  1 ERROR(S)

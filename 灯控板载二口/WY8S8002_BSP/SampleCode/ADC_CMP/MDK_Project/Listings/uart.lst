@@ -1,0 +1,126 @@
+C51 COMPILER V9.60.0.0   UART                                                              07/20/2026 10:16:07 PAGE 1   
+
+
+C51 COMPILER V9.60.0.0, COMPILATION OF MODULE UART
+OBJECT MODULE PLACED IN .\Objects\uart.obj
+COMPILER INVOKED BY: D:\Keil_5\C51\BIN\C51.EXE ..\..\..\Library\src\uart.c OMF2 OPTIMIZE(8,SPEED) BROWSE INCDIR(..\..\..
+                    -\Library\inc) DEBUG PRINT(.\Listings\uart.lst) TABS(2) OBJECT(.\Objects\uart.obj)
+
+line level    source
+
+   1          /**
+   2           * @file      uart.c
+   3           * @brief     UART Module Driver
+   4           * @author    Software Team
+   5           * @date      2023-07
+   6           * @version   V1.0.0
+   7           * @copyright WAYON
+   8           */
+   9          
+  10          #include "common.h"
+  11          #include "timer.h"
+  12          #include "uart.h"
+  13          
+  14          /**
+  15           * Configures UART Baud Rate
+  16           * @param[in] u8UartNum  UART number
+  17           * -# UART_0
+  18           * -# UART_1
+  19           * @param[in] u8Timer Timer selection
+  20           * -# UART_TIMER1
+  21           * -# UART_TIMER3
+  22           * @param[in] u32BaudRate UART Baud Rate
+  23           * @param[in] u8Double Baud rate doubling enable
+  24           * -# ENABLE_DOUBLE_BRT   Enable doubling
+  25           * -# DISABLE_DOUBLE_BRT  Disable doubling
+  26           */
+  27          void UART_ConfigBaudRate(uint8_t u8UartNum, uint8_t u8Timer, uint32_t u32BaudRate, uint8_t u8Double)
+  28          {
+  29   1          uint16_t u16Timer3PS;
+  30   1          uint8_t  u8UartDouble; /* UART doubling enable variable */
+  31   1      
+  32   1          if(u8Double == DISABLE_DOUBLE_BRT)
+  33   1          {
+  34   2              if(UART_0 == u8UartNum)
+  35   2              {
+  36   3                  DISABLE_UART0_SMOD; /* Disable UART0 doubling */
+  37   3              }
+  38   2              else
+  39   2              {
+  40   3                  DISABLE_UART1_SMOD; /* Disable UART1 doubling */
+  41   3              }
+  42   2              u8UartDouble = 0;
+  43   2          }
+  44   1          else
+  45   1          {
+  46   2              if(UART_0 == u8UartNum)
+  47   2              {
+  48   3                  ENABLE_UART0_SMOD; /* Enable UART0 doubling */
+  49   3              }
+  50   2              else
+  51   2              {
+  52   3                  ENABLE_UART1_SMOD; /* Enable UART1 doubling */
+  53   3              }
+  54   2              u8UartDouble = 1;
+C51 COMPILER V9.60.0.0   UART                                                              07/20/2026 10:16:07 PAGE 2   
+
+  55   2          }
+  56   1      
+  57   1          switch(u8Timer)
+  58   1          {
+  59   2              case UART_TIMER1:
+  60   2                  if(UART_0 == u8UartNum)
+  61   2                  {
+  62   3                      UART0_SCKS_SET(UART_TIMER1); /* Set UART0 to use TIMER1 as clock source */
+  63   3                  }
+  64   2                  else
+  65   2                  {
+  66   3                      UART1_SCKS_SET(UART_TIMER1);     /* Set UART1 to use TIMER1 as clock source */
+  67   3                  }
+  68   2                  TIMER1_TMOD_CNT1_SET(CLR_BIT);       /* Set clock source to internal clock */
+  69   2                  TIMER1_TMOD_GATE1_SET(CLR_BIT);      /* Start counting when TCON.TR1 is set to 1 */
+  70   2                  TIMER1_TMOD_MODE_SET(TIMER01_MODE2); /* 8-bit auto-reload timer/counter */
+  71   2                  TH1 = 256 - ((1 + u8UartDouble) * g_u32SystemClock) / (32 * 2 * u32BaudRate); /* Configure bau
+             -d rate */
+  72   2                  ENABLE_TIMER1;                                                                /* Start TIMER1 
+             -*/
+  73   2                  break;
+  74   2              case UART_TIMER3:
+  75   2                  if(UART_0 == u8UartNum)
+  76   2                  {
+  77   3                      UART0_SCKS_SET(UART_TIMER3); /* Set UART0 to use TIMER3 as clock source */
+  78   3                  }
+  79   2                  else
+  80   2                  {
+  81   3                      UART1_SCKS_SET(UART_TIMER3);           /* Set UART1 to use TIMER3 as clock source */
+  82   3                  }
+  83   2                  TIMER3_T3CON_DIV_SET(UART_TIMER3_DIV_SLE); /* Set TIMER3 prescaler */
+  84   2                  u16Timer3PS
+  85   2                      = 65536 - ((1 + u8UartDouble) * g_u32SystemClock) / (32 * (1 << UART_TIMER3_DIV_SLE) * u32
+             -BaudRate);
+  86   2                  T3RH = (u16Timer3PS >> 8) & 0xFF;
+  87   2                  T3RL = (u16Timer3PS >> 0) & 0xFF;
+  88   2                  ENABLE_TIMER3; /* Start TIMER3 */
+  89   2                  break;
+  90   2              default:
+  91   2                  break;
+  92   2          }
+  93   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    261    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----       8
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+   EDATA SIZE       =   ----    ----
+   HDATA SIZE       =   ----    ----
+   XDATA CONST SIZE =   ----    ----
+   FAR CONST SIZE   =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

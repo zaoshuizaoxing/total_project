@@ -1,0 +1,176 @@
+C51 COMPILER V9.60.0.0   PWM                                                               09/18/2026 14:22:39 PAGE 1   
+
+
+C51 COMPILER V9.60.0.0, COMPILATION OF MODULE PWM
+OBJECT MODULE PLACED IN .\Objects\pwm.obj
+COMPILER INVOKED BY: D:\Keil_5\C51\BIN\C51.EXE ..\..\..\Library\src\pwm.c OMF2 OPTIMIZE(8,SPEED) BROWSE INCDIR(..\..\..\
+                    -Library\inc) DEBUG PRINT(.\Listings\pwm.lst) TABS(2) OBJECT(.\Objects\pwm.obj)
+
+line level    source
+
+   1          /**
+   2           * @file      pwm.c
+   3           * @brief     PWM Driver Configuration
+   4           * @author    Software Team
+   5           * @date      2023-07
+   6           * @version   V1.0.0
+   7           * @copyright WAYON
+   8           */
+   9          
+  10          #include "common.h"
+  11          #include "pwm.h"
+  12          
+  13          /**
+  14           * Configures PWM interrupt
+  15           * @param[in] u8pwmNum  PWM channel
+  16           * -# PWM_0 - PWM_5
+  17           * @param[in] u8trigger Interrupt trigger mode
+  18           * -# PWM_FALLING_MODE    Falling edge on PWM0/1/2/3/4/5 pin
+  19           * -# PWM_RISING_MODE     Rising edge on PWM0/1/2/3/4/5 pin
+  20           * -# PWM_MIDPOINT_MODE   Midpoint of each PWM cycle
+  21           * -# PWM_ENDPOINT_MODE   Endpoint of each PWM cycle
+  22           * @note Midpoint or endpoint interrupt modes are only applicable in PWM center-aligned mode
+  23           */
+  24          void PWM_ConfigINT(uint8_t u8pwmNum, uint8_t u8trigger)
+  25          {
+  26   1          switch(u8pwmNum)
+  27   1          {
+  28   2              case PWM_0:
+  29   2                  PWM_PWM0_INTTY_SET(u8trigger);
+  30   2                  break;
+  31   2              case PWM_1:
+  32   2                  PWM_PWM1_INTTY_SET(u8trigger);
+  33   2                  break;
+  34   2              case PWM_2:
+  35   2                  PWM_PWM2_INTTY_SET(u8trigger);
+  36   2                  break;
+  37   2              case PWM_3:
+  38   2                  PWM_PWM3_INTTY_SET(u8trigger);
+  39   2                  break;
+  40   2              default:
+  41   2                  break;
+  42   2          }
+  43   1      }
+  44          
+  45          /**
+  46           * Configures output level after PWM channel fault
+  47           * @param[in] u8pwmNum  PWM channel
+  48           * -# PWM_0 - PWM_5
+  49           * @param[in] u8pwmLevel Output level
+  50           * -# OUTPUT_HIGH
+  51           * -# OUTPUT_LOW
+  52           */
+  53          void PWM_ConfigFBOutputLevel(uint8_t u8pwmNum, uint8_t u8pwmLevel)
+  54          {
+C51 COMPILER V9.60.0.0   PWM                                                               09/18/2026 14:22:39 PAGE 2   
+
+  55   1          switch(u8pwmNum)
+  56   1          {
+  57   2              case PWM_0:
+  58   2                  PWM_PWMOUTD_FBKD0_SET(u8pwmLevel);
+  59   2                  break;
+  60   2              case PWM_1:
+  61   2                  PWM_PWMOUTD_FBKD1_SET(u8pwmLevel);
+  62   2                  break;
+  63   2              case PWM_2:
+  64   2                  PWM_PWMOUTD_FBKD2_SET(u8pwmLevel);
+  65   2                  break;
+  66   2              case PWM_3:
+  67   2                  PWM_PWMOUTD_FBKD3_SET(u8pwmLevel);
+  68   2                  break;
+  69   2              default:
+  70   2                  break;
+  71   2          }
+  72   1      }
+  73          
+  74          /**
+  75           * Configures masked output level for PWM
+  76           * @param[in] u8pwmNum  PWM channel
+  77           * -# PWM_0 - PWM_5
+  78           * @param[in] u8pwmLevel  Output level
+  79           * -# OUTPUT_HIGH
+  80           * -# OUTPUT_LOW
+  81           */
+  82          void PWM_ConfigMASKOutputLevel(uint8_t u8pwmNum, uint8_t u8pwmLevel)
+  83          {
+  84   1          switch(u8pwmNum)
+  85   1          {
+  86   2              case PWM_0:
+  87   2                  PWM_PWMOUTD_MASKD0_SET(u8pwmLevel);
+  88   2                  break;
+  89   2              case PWM_1:
+  90   2                  PWM_PWMOUTD_MASKD1_SET(u8pwmLevel);
+  91   2                  break;
+  92   2              case PWM_2:
+  93   2                  PWM_PWMOUTD_MASKD2_SET(u8pwmLevel);
+  94   2                  break;
+  95   2              case PWM_3:
+  96   2                  PWM_PWMOUTD_MASKD3_SET(u8pwmLevel);
+  97   2                  break;
+  98   2              default:
+  99   2                  break;
+ 100   2          }
+ 101   1      }
+ 102          
+ 103          /**
+ 104           * Starts loading PWM configuration
+ 105           * @param[in] u8pwmNum  PWM channel
+ 106           * -# PWM_0 - PWM_5
+ 107           * @note
+ 108           * Writing 1 to this bit automatically loads new configuration values at the end of the current PWM cycle.
+             - Changed
+ 109           * configuration values, such as period, duty cycle, dead time, and mode, will take effect in the next cyc
+             -le.
+ 110           */
+ 111          void PWM_StartLoad(uint8_t u8pwmNum)
+ 112          {
+ 113   1          switch(u8pwmNum)
+ 114   1          {
+C51 COMPILER V9.60.0.0   PWM                                                               09/18/2026 14:22:39 PAGE 3   
+
+ 115   2              case PWM_0:
+ 116   2                  ENABLE_PWM0_LOAD;
+ 117   2                  /* Wait for load to complete */
+ 118   2                  while(1 == IS_PWM0_LOAD_FLAG)
+ 119   2                      ;
+ 120   2                  break;
+ 121   2              case PWM_1:
+ 122   2                  ENABLE_PWM1_LOAD;
+ 123   2                  /* Wait for load to complete */
+ 124   2                  while(1 == IS_PWM1_LOAD_FLAG)
+ 125   2                      ;
+ 126   2                  break;
+ 127   2              case PWM_2:
+ 128   2                  ENABLE_PWM2_LOAD;
+ 129   2                  /* Wait for load to complete */
+ 130   2                  while(1 == IS_PWM2_LOAD_FLAG)
+ 131   2                      ;
+ 132   2                  break;
+ 133   2              case PWM_3:
+ 134   2                  ENABLE_PWM3_LOAD;
+ 135   2                  /* Wait for load to complete */
+ 136   2                  while(1 == IS_PWM3_LOAD_FLAG)
+ 137   2                      ;
+ 138   2                  break;
+ 139   2              default:
+ 140   2                  break;
+ 141   2          }
+ 142   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    268    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+   EDATA SIZE       =   ----    ----
+   HDATA SIZE       =   ----    ----
+   XDATA CONST SIZE =   ----    ----
+   FAR CONST SIZE   =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

@@ -1,0 +1,149 @@
+C51 COMPILER V9.60.0.0   TELEMETRY_PROTOCOL                                                08/25/2026 17:28:06 PAGE 1   
+
+
+C51 COMPILER V9.60.0.0, COMPILATION OF MODULE TELEMETRY_PROTOCOL
+OBJECT MODULE PLACED IN .\Objects\telemetry_protocol.obj
+COMPILER INVOKED BY: D:\Keil_5\C51\BIN\C51.EXE ..\Source_Code\telemetry_protocol.c OMF2 OPTIMIZE(8,SPEED) BROWSE INCDIR(
+                    -..\..\..\Library\inc) DEBUG PRINT(.\Listings\telemetry_protocol.lst) TABS(2) OBJECT(.\Objects\telemetry_protocol.obj)
+
+line level    source
+
+   1          #include "telemetry_protocol.h"
+   2          
+   3          #include "soft_uart_rx.h"
+   4          
+   5          #define TELEMETRY_FRAME_HEADER  (0xA5U)
+   6          #define TELEMETRY_FRAME_TAIL    (0x5AU)
+   7          
+   8          static uint8_t xdata s_frame[SOFT_UART_PORT_COUNT][TELEMETRY_FRAME_SIZE];
+   9          static uint8_t s_frame_count[SOFT_UART_PORT_COUNT];
+  10          static Telemetry_Measurement_t xdata s_measurement[TELEMETRY_CHANNEL_COUNT];
+  11          
+  12          static uint16_t TelemetryProtocol_ReadU16(uint8_t xdata *bytes)
+  13          {
+  14   1          return (uint16_t)(((uint16_t)bytes[0] << 8) | bytes[1]);
+  15   1      }
+  16          
+  17          static void TelemetryProtocol_UpdatePair(uint8_t port)
+  18          {
+  19   1          uint8_t base_channel;
+  20   1          uint8_t connection;
+  21   1          uint8_t xdata *frame;
+  22   1      
+  23   1          frame = s_frame[port];
+  24   1          connection = frame[1];
+  25   1          base_channel = (uint8_t)(port * 2U);
+  26   1      
+  27   1          s_measurement[base_channel].voltage_mv = TelemetryProtocol_ReadU16(&frame[2]);
+  28   1          s_measurement[base_channel].current_ma = TelemetryProtocol_ReadU16(&frame[4]);
+  29   1          s_measurement[base_channel].connected = (connection & 0x01U) ? 1 : 0;
+  30   1          s_measurement[base_channel + 1U].voltage_mv = TelemetryProtocol_ReadU16(&frame[6]);
+  31   1          s_measurement[base_channel + 1U].current_ma = TelemetryProtocol_ReadU16(&frame[8]);
+  32   1          s_measurement[base_channel + 1U].connected = (connection & 0x02U) ? 1 : 0;
+  33   1      }
+  34          
+  35          static void TelemetryProtocol_ProcessByte(uint8_t port, uint8_t data_value)
+  36          {
+  37   1          uint8_t count;
+  38   1      
+  39   1          count = s_frame_count[port];
+  40   1          if(count == 0)
+  41   1          {
+  42   2              if(data_value == TELEMETRY_FRAME_HEADER)
+  43   2              {
+  44   3                  s_frame[port][0] = data_value;
+  45   3                  s_frame_count[port] = 1;
+  46   3              }
+  47   2              return;
+  48   2          }
+  49   1      
+  50   1          s_frame[port][count] = data_value;
+  51   1          count++;
+  52   1          if(count < TELEMETRY_FRAME_SIZE)
+  53   1          {
+  54   2              s_frame_count[port] = count;
+C51 COMPILER V9.60.0.0   TELEMETRY_PROTOCOL                                                08/25/2026 17:28:06 PAGE 2   
+
+  55   2              return;
+  56   2          }
+  57   1      
+  58   1          if((s_frame[port][10] == TELEMETRY_FRAME_TAIL)
+  59   1             && (s_frame[port][1] <= 3U))
+  60   1          {
+  61   2              TelemetryProtocol_UpdatePair(port);
+  62   2              s_frame_count[port] = 0;
+  63   2          }
+  64   1          else
+  65   1          {
+  66   2              s_frame_count[port] = (data_value == TELEMETRY_FRAME_HEADER) ? 1 : 0;
+  67   2              if(s_frame_count[port] != 0)
+  68   2              {
+  69   3                  s_frame[port][0] = data_value;
+  70   3              }
+  71   2          }
+  72   1      }
+  73          
+  74          void TelemetryProtocol_Init(void)
+  75          {
+  76   1          uint8_t i;
+  77   1          uint8_t j;
+  78   1      
+  79   1          for(i = 0; i < SOFT_UART_PORT_COUNT; i++)
+  80   1          {
+  81   2              s_frame_count[i] = 0;
+  82   2              for(j = 0; j < TELEMETRY_FRAME_SIZE; j++)
+  83   2              {
+  84   3                  s_frame[i][j] = 0;
+  85   3              }
+  86   2          }
+  87   1          for(i = 0; i < TELEMETRY_CHANNEL_COUNT; i++)
+  88   1          {
+  89   2              s_measurement[i].voltage_mv = 0;
+  90   2              s_measurement[i].current_ma = 0;
+  91   2              s_measurement[i].connected = 0;
+  92   2          }
+  93   1      }
+  94          
+  95          void TelemetryProtocol_Task(void)
+  96          {
+  97   1          uint8_t port;
+  98   1      
+  99   1          for(port = 0; port < SOFT_UART_PORT_COUNT; port++)
+ 100   1          {
+ 101   2              while(SoftUartRx_Available(port) != 0)
+ 102   2              {
+ 103   3                  TelemetryProtocol_ProcessByte(port, SoftUartRx_ReadByte(port));
+ 104   3              }
+ 105   2          }
+ 106   1      }
+ 107          
+ 108          uint8_t TelemetryProtocol_GetMeasurement(uint8_t channel, Telemetry_Measurement_t *measurement)
+ 109          {
+ 110   1          if((channel >= TELEMETRY_CHANNEL_COUNT) || (measurement == 0))
+ 111   1          {
+ 112   2              return 0;
+ 113   2          }
+ 114   1      
+ 115   1          *measurement = s_measurement[channel];
+ 116   1          return 1;
+C51 COMPILER V9.60.0.0   TELEMETRY_PROTOCOL                                                08/25/2026 17:28:06 PAGE 3   
+
+ 117   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    610    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =     42    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      2       7
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+   EDATA SIZE       =   ----    ----
+   HDATA SIZE       =   ----    ----
+   XDATA CONST SIZE =   ----    ----
+   FAR CONST SIZE   =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

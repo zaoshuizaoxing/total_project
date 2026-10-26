@@ -1,0 +1,1 @@
+"..\Source_Code\adc_cmp.c" OMF2 OPTIMIZE (8,SPEED) BROWSE INCDIR(..\..\..\Library\inc) DEBUG PRINT(.\Listings\adc_cmp.lst) TABS (2) OBJECT(.\Objects\adc_cmp.obj)

@@ -5,7 +5,7 @@
 #include "wdt.h"
 //无运放
 //采样次数
-#define ADC_SAMPLE_COUNT              (10U)
+#define ADC_SAMPLE_COUNT              (10U) 
 #define ADC_DISCARD_HIGH_COUNT        (2U)
 #define ADC_DISCARD_LOW_COUNT         (2U)
 #define ADC_FILTERED_SAMPLE_COUNT \
@@ -34,7 +34,7 @@ uint16_t current_threshold_x10_ma2=800U;
 #define limix 4000U
 
 //钳位次数
-#define NEW_BATTERY_CONFIRM_COUNT 20U
+#define NEW_BATTERY_CONFIRM_COUNT 22U
 
 static void GPIO_InitLedOutputs(void);
 static void ADC_InitCurrentInputs(void);
